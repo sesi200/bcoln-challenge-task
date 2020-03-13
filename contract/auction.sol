@@ -34,6 +34,7 @@ contract Auction {
    }
    
    function bid() public payable valid_bid auction_running {
+       require(msg.sender != seller);
        //revert previous max bid
        current_max_bidder.transfer(current_max_bid);
        //register new max bid

@@ -33,16 +33,16 @@ contract Auction {
        _;
    }
    
-   function bid() public payable valid_bid auction_running {
+   function bid(address payable bidder) external payable valid_bid auction_running {
        require(msg.sender != seller);
        //revert previous max bid
        current_max_bidder.transfer(current_max_bid);
        //register new max bid
        current_max_bid = msg.value;
-       current_max_bidder = msg.sender;
+       current_max_bidder = bidder;
    }
    
-   function close_auction() public auction_ended {
+   function close_auction() external auction_ended {
        seller.transfer(current_max_bid);
    }
 }
@@ -50,12 +50,20 @@ contract Auction {
 contract AuctionHouse {
     Auction[] public auctions;
     
-    function createAuction() external {
-        Auction newAuction = new Auction(msg.sender, "desc", 60, 0);
+    function createAuction(string calldata description, uint duration_in_seconds, uint minimum_bid_wei) external {
+        Auction newAuction = new Auction(msg.sender, description, duration_in_seconds, minimum_bid_wei);
         auctions.push(newAuction);
     }
     
-    function getAuctionAdrress(uint auction_index) public view returns(address) {
+    function getAuctionAddress(uint auction_index) public view returns(address) {
         return address(auctions[auction_index]);
+    }
+    
+    function bid(uint auction_index) external payable {
+        auctions[auction_index].bid.value(msg.value)(msg.sender);
+    }
+    
+    function close_auction(uint auction_index) external {
+        auctions[auction_index].close_auction();
     }
 }

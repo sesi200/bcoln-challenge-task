@@ -9,6 +9,7 @@ abstract contract Auction {
     uint public min_bid;
     function bid(address payable bidder) virtual external payable;
     function close_auction() virtual external;
+    function current_sale_price() virtual public view returns(uint);
     bool auction_closed = false;
     
     modifier closes_auction() virtual {
@@ -54,6 +55,10 @@ contract FirstPriceAuction is Auction {
    
    function close_auction() override external auction_ended closes_auction {
        seller.transfer(current_max_bid);
+   }
+   
+   function current_sale_price() override public view returns(uint) {
+       return current_max_bid;
    }
 }
 
@@ -104,6 +109,14 @@ contract SecondPriceAuction is Auction {
         require(msg.value >= min_bid);
         _;
    }
+   
+   function current_sale_price() override public view returns(uint) {
+       if (current_second_bid > min_bid) {
+           return current_second_bid;
+       } else {
+           return min_bid;
+       }
+   }
 }
 
 contract AuctionHouse {
@@ -133,6 +146,6 @@ contract AuctionHouse {
     
     function close_auction(uint auction_index) external {
         auctions[auction_index].close_auction();
-        emit AuctionClosed(auction_index, auctions[auction_index].current_max_bid(), auctions[auction_index].seller(), auctions[auction_index].current_max_bidder());
+        emit AuctionClosed(auction_index, auctions[auction_index].current_sale_price(), auctions[auction_index].seller(), auctions[auction_index].current_max_bidder());
     }
 }

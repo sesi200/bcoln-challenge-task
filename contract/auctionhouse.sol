@@ -5,7 +5,7 @@ contract Auction {
     address payable public seller;
     string public description;
     uint public end_timestamp;
-    address payable current_max_bidder;
+    address payable public current_max_bidder;
     uint public current_max_bid;
     uint public min_bid;
    
@@ -49,6 +49,9 @@ contract Auction {
 
 contract AuctionHouse {
     Auction[] public auctions;
+
+    event NewBid(uint auction_index, uint bid_amount);
+    event AuctionClosed(uint auction_index, uint max_bid, address seller, address buyer);
     
     function createAuction(string calldata description, uint duration_in_seconds, uint minimum_bid_wei) external {
         Auction newAuction = new Auction(msg.sender, description, duration_in_seconds, minimum_bid_wei);
@@ -61,9 +64,11 @@ contract AuctionHouse {
     
     function bid(uint auction_index) external payable {
         auctions[auction_index].bid.value(msg.value)(msg.sender);
+        emit NewBid(auction_index, msg.value);
     }
     
     function close_auction(uint auction_index) external {
         auctions[auction_index].close_auction();
+        emit AuctionClosed(auction_index, auctions[auction_index].current_max_bid(), auctions[auction_index].seller(), auctions[auction_index].current_max_bidder());
     }
 }

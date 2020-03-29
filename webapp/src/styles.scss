@@ -1,0 +1,34 @@
+@import '_vars';
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+//font-family: 'Bellota Text', cursive;
+//font-family: 'Baloo 2', cursive;
+body {
+  margin: 0;
+  font-family: $font-2;
+  //font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.title{
+  font-family: $font-1;
+  font-weight: 500 !important;
+  font-size: 60px !important;
+  color: #fff !important;
+  padding-top: 50px;
+}
+
+.title span{
+  color: $dbay-orange;
+}
+
+.btn-circle {
+  width: 80px;
+  height: 80px;
+  padding: 10px 16px;
+  border-radius: 40px;
+  font-size: 20px;
+  text-align: center;
+  font-family: $font-2;
+}

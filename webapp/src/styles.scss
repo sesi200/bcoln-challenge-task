@@ -32,3 +32,34 @@ body {
   text-align: center;
   font-family: $font-2;
 }
+
+.nav-link{
+  font-family: $font-2;
+  color: $dbay-orange;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.nav-link:hover{
+  font-family: $font-2;
+  color: #804000;
+  font-size: 30px;
+}
+
+.active{
+  color: #804000;
+}
+
+.pointer{
+  cursor: pointer;
+}
+
+.input-group-text {
+  border-radius: 0px !important;
+  background-color: transparent !important;
+}
+
+.btn-success{
+  background-color: $dbay-orange !important;
+  border-color: $dbay-orange !important;
+}

@@ -1,0 +1,30 @@
+@import "../../../_vars.scss";
+
+.item-title{
+  font-family: $font-2;
+  color: $dbay-orange;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.item-time{
+  font-family: $font-2;
+  color: #333;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.item-price{
+  font-family: $font-2;
+  color: #333;
+  font-size: 30px;
+  font-weight: 400;
+}
+
+.item-image{
+  //background: url("../../../assets/images/placeholder.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 100%;
+}

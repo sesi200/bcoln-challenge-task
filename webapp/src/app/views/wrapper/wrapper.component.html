@@ -1,1 +1,13 @@
-<p>wrapper works!</p>
+<div class="container mt-4">
+  <h1 class="title black">dBay<span>.</span></h1>
+  <div class="row py-4">
+    <div class="col-3 border-right">
+      <app-nav [activeNav]="activeNav"></app-nav>
+    </div>
+    <div class="col-9">
+      <app-open-auctions *ngIf="activeNav=='auctions'"></app-open-auctions>
+      <app-my-bidding *ngIf="activeNav=='bidding'"></app-my-bidding>
+      <app-my-selling *ngIf="activeNav=='selling'"></app-my-selling>
+    </div>
+  </div>
+</div>

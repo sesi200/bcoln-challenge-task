@@ -1,0 +1,27 @@
+<div class="p-2">
+  <div class="row border-bottom py-2">
+    <div class="col-2">
+      <div class="item-image" [style]="'background-image: url(\'assets/images/placeholder.jpg\')' | safe "></div>
+    </div>
+    <div class="col-10">
+      <div class="row">
+        <div class="col-8"><h3 class="item-title">A super nice chair</h3></div>
+        <div class="col-4 text-right"><span class="item-time"><fa-icon icon="clock" class="pointer" ngbTooltip="Time left"></fa-icon> 3h 20s</span></div>
+      </div>
+      <div class="row">
+        <div class="col-6"><span class="item-price"><fa-icon  [icon]="['fab','ethereum']" class="pointer" ngbTooltip="Price"></fa-icon> 3.59</span></div>
+        <div class="col-6">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><fa-icon [icon]="['fab','ethereum']"></fa-icon></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Amount">
+            <div class="input-group-append">
+              <button class="btn btn-success rounded-0" type="submit">Place Bid</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

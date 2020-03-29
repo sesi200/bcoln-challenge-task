@@ -8,7 +8,8 @@ import {DOCUMENT} from '@angular/common';
 library.add(fas, fab);
 // alternative approach to fix SSR
 config.autoReplaceSvg = true;
-library.add(fas);
+// library.add(fas);
+// library.add(fab);
 
 @Component({
   selector: 'app-root',

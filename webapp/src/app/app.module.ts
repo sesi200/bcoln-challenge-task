@@ -15,6 +15,7 @@ import { NavComponent } from './components/nav/nav.component';
 import { ItemDisplayerComponent } from './components/item-displayer/item-displayer.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {SafePipe} from './pipes/safestyle.pipe';
+import {MetaMaskService} from './metamask.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import {SafePipe} from './pipes/safestyle.pipe';
     FontAwesomeModule,
     // NgxPageScrollModule
   ],
-  providers: [],
+  providers: [MetaMaskService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

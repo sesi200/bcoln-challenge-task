@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  mainStorageAddress: '',
+  ropstenStorageAddress: '0xa785B8c8D50ECbBf126718c8DE8a61896DC1927D',
+  privateStorageAddress: '0xa785B8c8D50ECbBf126718c8DE8a61896DC1927D'
 };
 
 /*

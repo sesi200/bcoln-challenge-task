@@ -28,11 +28,13 @@
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@ng-bootstrap/ng-bootstrap": "6.0.2",
+    "bignumber.js": "^9.0.0",
     "bootstrap": "4.4.1",
     "ngx-page-scroll": "^7.0.1",
     "ngx-page-scroll-core": "^7.0.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
+    "web3": "^1.2.6",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

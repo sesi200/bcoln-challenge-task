@@ -125,14 +125,16 @@ contract AuctionHouse {
     event NewBid(uint auction_index, uint bid_amount);
     event AuctionClosed(uint auction_index, uint max_bid, address seller, address buyer);
     
-    function create_first_price_auction(string calldata description, uint duration_in_seconds, uint minimum_bid_wei) external {
+    function create_first_price_auction(string calldata description, uint duration_in_seconds, uint minimum_bid_wei) external returns(uint256){
         Auction newAuction = new FirstPriceAuction(msg.sender, description, duration_in_seconds, minimum_bid_wei);
         auctions.push(newAuction);
+        return auctions.length - 1;
     }
     
-    function create_second_price_auction(string calldata description, uint duration_in_seconds, uint minimum_bid_wei) external {
+    function create_second_price_auction(string calldata description, uint duration_in_seconds, uint minimum_bid_wei) external returns(uint256){
         Auction newAuction = new SecondPriceAuction(msg.sender, description, duration_in_seconds, minimum_bid_wei);
         auctions.push(newAuction);
+        return auctions.length - 1;
     }
     
     function get_auction_address(uint auction_index) public view returns(address) {

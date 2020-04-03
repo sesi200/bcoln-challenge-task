@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Auction} from '../../model/model';
+import {AuctionService} from '../../services/auction.service';
 
 @Component({
   selector: 'app-my-bidding',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MyBiddingComponent implements OnInit {
 
-  constructor() { }
+  openAuctions: Auction[];
 
-  ngOnInit(): void {
+  constructor(private auctionService: AuctionService) {
   }
 
+  ngOnInit(): void {
+    this.auctionService.getMySelling().subscribe(value => {
+      this.openAuctions = value;
+    });
+
+  }
 }

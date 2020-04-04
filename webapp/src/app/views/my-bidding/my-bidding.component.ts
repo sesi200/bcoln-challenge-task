@@ -1,4 +1,6 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Auction} from '../../model/model';
+import {AuctionService} from '../../services/auction.service';
 import {MetaMaskService} from 'src/app/metamask.service';
 
 @Component({
@@ -9,7 +11,9 @@ import {MetaMaskService} from 'src/app/metamask.service';
 export class MyBiddingComponent implements OnInit {
   public networkName: string;
 
-  constructor(private metaMaskService: MetaMaskService) {
+  openAuctions: Auction[];
+
+  constructor(private auctionService: AuctionService, private metaMaskService: MetaMaskService) {
   }
 
   async ngOnInit() {
@@ -27,5 +31,8 @@ export class MyBiddingComponent implements OnInit {
     } catch {
       console.log('something went wrong');
     }
+    this.auctionService.getMySelling().subscribe(value => {
+      this.openAuctions = value;
+    });
   }
 }

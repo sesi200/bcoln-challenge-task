@@ -1,4 +1,3 @@
-<app-item-displayer></app-item-displayer>
-<app-item-displayer></app-item-displayer>
-<app-item-displayer></app-item-displayer>
-<app-item-displayer></app-item-displayer>
+<ng-container *ngFor="let auction of openAuctions">
+  <app-item-displayer  [auction]="auction"></app-item-displayer>
+</ng-container>

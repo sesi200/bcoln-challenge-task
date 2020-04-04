@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Auction} from '../../model/model';
 
 @Component({
   selector: 'app-item-displayer',
@@ -7,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ItemDisplayerComponent implements OnInit {
 
+  @Input()
+  auction: Auction;
   constructor() { }
 
   ngOnInit(): void {

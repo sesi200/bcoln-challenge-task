@@ -1,1 +1,3 @@
-<p>my-selling works!</p>
+<ng-container *ngFor="let auction of openAuctions">
+  <app-item-displayer  [auction]="auction"></app-item-displayer>
+</ng-container>

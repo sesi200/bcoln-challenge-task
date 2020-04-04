@@ -4,6 +4,8 @@ import {fas} from '@fortawesome/free-solid-svg-icons';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 import {PageScrollService} from 'ngx-page-scroll-core';
 import {DOCUMENT} from '@angular/common';
+import {MetaMaskService} from './services/metamask.service';
+import {first} from 'rxjs/operators';
 
 library.add(fas, fab);
 // alternative approach to fix SSR
@@ -16,9 +18,10 @@ config.autoReplaceSvg = true;
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'dbay';
-  constructor(private pageScrollService: PageScrollService, @Inject(DOCUMENT) private document: any) { }
+  constructor(private pageScrollService: PageScrollService, @Inject(DOCUMENT) private document: any,
+              private metaMaskService: MetaMaskService) {}
 
 
   scrollToMain() {
@@ -26,5 +29,9 @@ export class AppComponent {
       document: this.document,
       scrollTarget: '.mainAnchor',
     });
+  }
+
+  ngOnInit() {
+    this.metaMaskService.init().pipe(first()).subscribe();
   }
 }

@@ -1,7 +1,9 @@
 import {Inject, Injectable} from '@angular/core';
-import {WEB3} from './WEB3';
+import {WEB3} from '../WEB3';
 import Web3 from 'web3';
-import {environment} from '../environments/environment';
+import {environment} from '../../environments/environment';
+import {from} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 @Injectable()
 export class MetaMaskService {
@@ -317,7 +319,6 @@ export class MetaMaskService {
     }
   ];
 
-  public currentNetwork: string;
   public storageContract: any;
   public auctionHouseContract: any;
 
@@ -329,22 +330,25 @@ export class MetaMaskService {
     };
   }
 
-  async init() {
-    this.currentNetwork = await this.web3.eth.net.getNetworkType();
-    switch (this.currentNetwork) {
-      case 'main':
-        this.storageContract = await new this.web3.eth.Contract(this.STORAGE_ABI, environment.mainStorageAddress);
-        this.auctionHouseContract = await new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.mainAuctionHouseAddress);
-        break;
-      case 'ropsten':
-        this.storageContract = await new this.web3.eth.Contract(this.STORAGE_ABI, environment.ropstenStorageAddress);
-        this.auctionHouseContract = await new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.ropstenAuctionHouseAddress);
-        break;
-      case 'private':
-        this.storageContract = await new this.web3.eth.Contract(this.STORAGE_ABI, environment.privateStorageAddress);
-        this.auctionHouseContract = await new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.privateAuctionHouseAddress);
-        break;
-    }
+  init() {
+    return from(this.web3.eth.net.getNetworkType()).pipe(
+      tap(currentNetwork => {
+        switch (currentNetwork) {
+          case 'main':
+            this.storageContract = new this.web3.eth.Contract(this.STORAGE_ABI, environment.mainStorageAddress);
+            this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.mainAuctionHouseAddress);
+            break;
+          case 'ropsten':
+            this.storageContract = new this.web3.eth.Contract(this.STORAGE_ABI, environment.ropstenStorageAddress);
+            this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.ropstenAuctionHouseAddress);
+            break;
+          case 'private':
+            this.storageContract = new this.web3.eth.Contract(this.STORAGE_ABI, environment.privateStorageAddress);
+            this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.privateAuctionHouseAddress);
+            break;
+        }
+        }
+    ));
   }
 
   public async getCurrentAccount() {
@@ -359,7 +363,6 @@ export class MetaMaskService {
   }
 
   public async retreive() {
-    const account = await this.getCurrentAccount();
     return await this.storageContract.methods.retreive().call();
   }
 
@@ -379,13 +382,21 @@ export class MetaMaskService {
     return await this.auctionHouseContract.methods.auctions().call();
   }
 
-  public async getAuctionAddress(auctionIndex: number) {
-    return await this.auctionHouseContract.methods.get_auction_address(auctionIndex).call();
+  public getAuctionAddress(auctionIndex: number) {
+    return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call());
   }
 
-  public async getAuctionDescription(auctionIndex: number) {
-    const auctionAddress = await this.auctionHouseContract.methods.get_auction_address(auctionIndex).call();
-    const auctionContract = await new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress);
-    return await auctionContract.methods.description().call();
+  public getAuctionDescription(auctionIndex: number) {
+    return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call()).pipe(
+      map((auctionAddress: string) => new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress)),
+      switchMap(auctionContract => from(auctionContract.methods.description().call())
+    ));
+  }
+
+  public getAuctionEndTimestamp(auctionIndex: number) {
+    return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call()).pipe(
+      map((auctionAddress: string) => new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress)),
+      switchMap(auctionContract => from(auctionContract.methods.end_timestamp().call())
+      ));
   }
 }

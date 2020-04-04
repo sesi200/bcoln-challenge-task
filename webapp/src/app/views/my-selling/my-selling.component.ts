@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Auction} from '../../model/model';
 import {AuctionService} from '../../services/auction.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-my-selling',
@@ -9,16 +10,13 @@ import {AuctionService} from '../../services/auction.service';
 })
 export class MySellingComponent implements OnInit {
 
-  openAuctions: Auction[];
+  openAuctions$: Observable<Auction[]>;
 
   constructor(private auctionService: AuctionService) {
   }
 
   ngOnInit(): void {
-    this.auctionService.getMySelling().subscribe(value => {
-      this.openAuctions = value;
-    });
-
+    this.openAuctions$ = this.auctionService.getMySelling();
   }
 
 }

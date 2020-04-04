@@ -15,7 +15,7 @@ import { NavComponent } from './components/nav/nav.component';
 import { ItemDisplayerComponent } from './components/item-displayer/item-displayer.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {SafePipe} from './pipes/safestyle.pipe';
-import {MetaMaskService} from './metamask.service';
+import {MetaMaskService} from './services/metamask.service';
 
 @NgModule({
   declarations: [

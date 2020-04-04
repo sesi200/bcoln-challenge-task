@@ -5,8 +5,11 @@
 export const environment = {
   production: false,
   mainStorageAddress: '',
+  mainAuctionAddress: '',
   ropstenStorageAddress: '0xa785B8c8D50ECbBf126718c8DE8a61896DC1927D',
-  privateStorageAddress: '0xa785B8c8D50ECbBf126718c8DE8a61896DC1927D'
+  ropstenAuctionAddress: '',
+  privateStorageAddress: '0xaC65C660b590B47156A13009cA8b36D1Be0276ef',
+  privateAuctionAddress: '0x4a6C7eac183DC22631452Ad4d95A65eF78cc1Cde'
 };
 
 /*

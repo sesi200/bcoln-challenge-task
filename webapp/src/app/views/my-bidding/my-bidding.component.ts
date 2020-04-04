@@ -17,9 +17,8 @@ export class MyBiddingComponent implements OnInit {
     this.networkName = this.metaMaskService.currentNetwork;
     console.log(this.networkName);
     console.log(this.metaMaskService.getCurrentAccount());
-    console.log("---");
-    console.log(this.metaMaskService.store('3'));
-    console.log("---");
-    console.log(this.metaMaskService.retreive());
+    console.log('---');
+    //console.log(this.metaMaskService.createFirstPriceAuction('a book', 200, 80));
+    console.log(this.metaMaskService.getAuctions());
   }
 }

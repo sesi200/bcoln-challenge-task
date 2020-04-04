@@ -16,9 +16,16 @@ export class MyBiddingComponent implements OnInit {
     await this.metaMaskService.init();
     this.networkName = this.metaMaskService.currentNetwork;
     console.log(this.networkName);
-    console.log(this.metaMaskService.getCurrentAccount());
+    await this.metaMaskService.getCurrentAccount();
     console.log('---');
-    //console.log(this.metaMaskService.createFirstPriceAuction('a book', 200, 80));
-    console.log(this.metaMaskService.getAuctions());
+    await this.metaMaskService.createFirstPriceAuction('a book', 200, 80);
+    try {
+      const description = await this.metaMaskService.getAuctionDescription(1);
+      const address = await this.metaMaskService.getAuctionAddress(1);
+      console.log(description);
+      console.log(address);
+    } catch {
+      console.log('something went wrong');
+    }
   }
 }

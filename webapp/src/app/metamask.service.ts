@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {WEB3} from './web3';
+import {WEB3} from './WEB3';
 import Web3 from 'web3';
 import {environment} from '../environments/environment';
 
@@ -40,7 +40,7 @@ export class MetaMaskService {
     }
   ];
 
-  AUCTION_ABI: any = [
+  AUCTIONHOUSE_ABI: any = [
     {
       anonymous: false,
       inputs: [
@@ -203,9 +203,123 @@ export class MetaMaskService {
     }
   ];
 
+  AUCTION_ABI: any = [
+    {
+      inputs: [
+        {
+          internalType: 'address payable',
+          name: 'bidder',
+          type: 'address'
+        }
+      ],
+      name: 'bid',
+      outputs: [],
+      stateMutability: 'payable',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'close_auction',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'current_max_bid',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'current_max_bidder',
+      outputs: [
+        {
+          internalType: 'address payable',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'current_sale_price',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'description',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'end_timestamp',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'min_bid',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'seller',
+      outputs: [
+        {
+          internalType: 'address payable',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    }
+  ];
+
   public currentNetwork: string;
   public storageContract: any;
-  public auctionContract: any;
+  public auctionHouseContract: any;
 
   static getTransactionObject(FROM: string, GAS: number, VALUE: number) {
     return {
@@ -220,15 +334,15 @@ export class MetaMaskService {
     switch (this.currentNetwork) {
       case 'main':
         this.storageContract = await new this.web3.eth.Contract(this.STORAGE_ABI, environment.mainStorageAddress);
-        this.auctionContract = await new this.web3.eth.Contract(this.AUCTION_ABI, environment.mainAuctionAddress);
+        this.auctionHouseContract = await new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.mainAuctionHouseAddress);
         break;
       case 'ropsten':
         this.storageContract = await new this.web3.eth.Contract(this.STORAGE_ABI, environment.ropstenStorageAddress);
-        this.auctionContract = await new this.web3.eth.Contract(this.AUCTION_ABI, environment.ropstenAuctionAddress);
+        this.auctionHouseContract = await new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.ropstenAuctionHouseAddress);
         break;
       case 'private':
         this.storageContract = await new this.web3.eth.Contract(this.STORAGE_ABI, environment.privateStorageAddress);
-        this.auctionContract = await new this.web3.eth.Contract(this.AUCTION_ABI, environment.privateAuctionAddress);
+        this.auctionHouseContract = await new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.privateAuctionHouseAddress);
         break;
     }
   }
@@ -252,16 +366,26 @@ export class MetaMaskService {
   public async bid(auctionIndex: number) {
     const account = await this.getCurrentAccount();
     const transactionObj = await MetaMaskService.getTransactionObject(account, 5000000, 0);
-    return await this.auctionContract.methods.bid(auctionIndex).send(transactionObj);
+    return await this.auctionHouseContract.methods.bid(auctionIndex).send(transactionObj);
   }
 
   public async createFirstPriceAuction(description: string, durationInSec: number, minBidWei: number) {
     const account = await this.getCurrentAccount();
     const transactionObj = await MetaMaskService.getTransactionObject(account, 5000000, 0);
-    return await this.auctionContract.methods.create_first_price_auction(description, durationInSec, minBidWei).send(transactionObj);
+    return await this.auctionHouseContract.methods.create_first_price_auction(description, durationInSec, minBidWei).send(transactionObj);
   }
 
   public async getAuctions() {
-    return await this.auctionContract.methods.auctions(0).call();
+    return await this.auctionHouseContract.methods.auctions().call();
+  }
+
+  public async getAuctionAddress(auctionIndex: number) {
+    return await this.auctionHouseContract.methods.get_auction_address(auctionIndex).call();
+  }
+
+  public async getAuctionDescription(auctionIndex: number) {
+    const auctionAddress = await this.auctionHouseContract.methods.get_auction_address(auctionIndex).call();
+    const auctionContract = await new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress);
+    return await auctionContract.methods.description().call();
   }
 }

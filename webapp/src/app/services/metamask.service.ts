@@ -11,37 +11,6 @@ export class MetaMaskService {
   constructor(@Inject(WEB3) private web3: Web3) {
   }
 
-  STORAGE_ABI: any = [
-    {
-      constant: false,
-      inputs: [
-        {
-          name: 'num',
-          type: 'uint256'
-        }
-      ],
-      name: 'store',
-      outputs: [],
-      payable: false,
-      stateMutability: 'nonpayable',
-      type: 'function'
-    },
-    {
-      constant: true,
-      inputs: [],
-      name: 'retreive',
-      outputs: [
-        {
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      payable: false,
-      stateMutability: 'view',
-      type: 'function'
-    }
-  ];
-
   AUCTIONHOUSE_ABI: any = [
     {
       anonymous: false,
@@ -354,16 +323,6 @@ export class MetaMaskService {
   public async getCurrentAccount() {
     const accounts = await this.web3.eth.getAccounts();
     return accounts[0];
-  }
-
-  public async store(num: string) {
-    const account = await this.getCurrentAccount();
-    const transactionObj = await MetaMaskService.getTransactionObject(account, 5000000, 0);
-    return await this.storageContract.methods.store(num).send(transactionObj);
-  }
-
-  public async retreive() {
-    return await this.storageContract.methods.retreive().call();
   }
 
   public async bid(auctionIndex: number) {

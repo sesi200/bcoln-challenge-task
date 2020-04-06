@@ -4,12 +4,9 @@
 
 export const environment = {
   production: false,
-  mainStorageAddress: '',
   mainAuctionHouseAddress: '',
-  ropstenStorageAddress: '0xa785B8c8D50ECbBf126718c8DE8a61896DC1927D',
   ropstenAuctionHouseAddress: '',
-  privateStorageAddress: '0xaC65C660b590B47156A13009cA8b36D1Be0276ef',
-  privateAuctionHouseAddress: '0xB3f0E37Cd99a3B840E9c5c9701eC93bD694c046b'
+  privateAuctionHouseAddress: '0x527e4926C03d288FE5f296C35b601288B47fe464'
 };
 
 /*

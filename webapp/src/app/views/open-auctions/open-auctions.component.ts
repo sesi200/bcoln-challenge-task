@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {AuctionService} from '../../services/auction.service';
+import {Component, OnInit} from '@angular/core';
+import {AuctionService, METHODS} from '../../services/auction.service';
 import {Auction} from '../../model/model';
+import {Observable} from 'rxjs';
+import {MetaMaskService} from '../../services/metamask.service';
+import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-open-auctions',
@@ -9,14 +12,12 @@ import {Auction} from '../../model/model';
 })
 export class OpenAuctionsComponent implements OnInit {
 
-  openAuctions: Auction[];
-  constructor(private auctionService: AuctionService) { }
+  openAuctions$: Observable<Auction[]>;
+
+  constructor(private auctionService: AuctionService, private metaMaskService: MetaMaskService) { }
 
   ngOnInit(): void {
-    this.auctionService.getOpenAuctions().subscribe(value => {
-      this.openAuctions = value;
-    });
-
+    this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);
   }
 
 }

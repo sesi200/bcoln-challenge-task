@@ -20,8 +20,7 @@ config.autoReplaceSvg = true;
 })
 export class AppComponent implements OnInit {
   title = 'dbay';
-  constructor(private pageScrollService: PageScrollService, @Inject(DOCUMENT) private document: any,
-              private metaMaskService: MetaMaskService) {}
+  constructor(private pageScrollService: PageScrollService, @Inject(DOCUMENT) private document: any) {}
 
 
   scrollToMain() {
@@ -32,6 +31,5 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.metaMaskService.init().pipe(first()).subscribe();
   }
 }

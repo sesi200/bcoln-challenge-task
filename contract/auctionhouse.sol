@@ -10,7 +10,8 @@ abstract contract Auction {
     function bid(address payable bidder) virtual external payable;
     function close_auction() virtual external;
     function current_sale_price() virtual public view returns(uint);
-    bool auction_closed = false;
+    function is_bidder(address payable check) virtual external view returns(bool);
+    bool public auction_closed = false;
     
     modifier closes_auction() virtual {
         require(!auction_closed);
@@ -59,6 +60,10 @@ contract FirstPriceAuction is Auction {
    
    function current_sale_price() override public view returns(uint) {
        return current_max_bid;
+   }
+   
+   function is_bidder(address payable check) override external view returns(bool){
+       return current_max_bidder==check;
    }
 }
 
@@ -117,6 +122,10 @@ contract SecondPriceAuction is Auction {
            return min_bid;
        }
    }
+   
+   function is_bidder(address payable check) override external view returns(bool) {
+       return current_max_bidder==check || current_second_bidder==check;
+   }
 }
 
 contract AuctionHouse {
@@ -149,5 +158,66 @@ contract AuctionHouse {
     function close_auction(uint auction_index) external {
         auctions[auction_index].close_auction();
         emit AuctionClosed(auction_index, auctions[auction_index].current_sale_price(), auctions[auction_index].seller(), auctions[auction_index].current_max_bidder());
+    }
+    
+    function all_auctions() external view returns(Auction[] memory) {
+        return auctions;
+    }
+    
+    function all_open_auctions() external view returns(Auction[] memory) {
+        //cannot make dynamic arrays here. Have to create oversized array, then copy to correct size
+        Auction[] memory oversized = new Auction[](auctions.length);
+        uint count = 0;
+        for(uint i = 0; i < auctions.length; i++) {
+            if(!auctions[i].auction_closed()) {
+                oversized[count] = auctions[count];
+                count++;
+            }
+        }
+        
+        Auction[] memory ret = new Auction[](count);
+        for(uint i = 0; i < count; i++) {
+            ret[i] = oversized[i];
+        }
+        
+        return ret;
+    }
+    
+    function all_auctions_for_seller(address payable seller) external view returns(Auction[] memory) {
+        //cannot make dynamic arrays here. Have to create oversized array, then copy to correct size
+        Auction[] memory oversized = new Auction[](auctions.length);
+        uint count = 0;
+        for(uint i = 0; i < auctions.length; i++) {
+            if(auctions[i].seller() == seller) {
+                oversized[count] = auctions[count];
+                count++;
+            }
+        }
+        
+        Auction[] memory ret = new Auction[](count);
+        for(uint i = 0; i < count; i++) {
+            ret[i] = oversized[i];
+        }
+        
+        return ret;
+    }
+    
+    function all_auctions_for_bidder(address payable bidder) external view returns(Auction[] memory) {
+        //cannot make dynamic arrays here. Have to create oversized array, then copy to correct size
+        Auction[] memory oversized = new Auction[](auctions.length);
+        uint count = 0;
+        for(uint i = 0; i < auctions.length; i++) {
+            if(auctions[i].is_bidder(bidder)) {
+                oversized[count] = auctions[count];
+                count++;
+            }
+        }
+        
+        Auction[] memory ret = new Auction[](count);
+        for(uint i = 0; i < count; i++) {
+            ret[i] = oversized[i];
+        }
+        
+        return ret;
     }
 }

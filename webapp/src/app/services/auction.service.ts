@@ -37,29 +37,35 @@ export class AuctionService {
   getOpenAuctions(): Observable<Auction[]> {
     return this.metaMaskService.getAllOpenAuctions().pipe(
       map((addresses: string[]) => addresses.map(address => forkJoin([
+          this.getAuctionIndexOfAddress(address),
           this.metaMaskService.getAuctionDescriptionFromAddress(address),
-          this.metaMaskService.getAuctionCurrentMaxBidFromAddress(address),
+          this.metaMaskService.getAuctionCurrentSalePrice(address),
           this.metaMaskService.getAuctionTimestampFromAddress(address)
         ]).pipe(
-          map(([description, currentMaxBid, endTimestamp]) => ({
-            description,
-            currentMaxBid,
-            endTimestamp: this.getTimeLeft(endTimestamp.toString()),
-            imgUrl: 'images/placeholder.jpg'
-          } as Auction))
-          ))
-        ),
+        map(([auctionIndex, description, currentMaxBid, endTimestamp]) => ({
+          address,
+          auctionIndex,
+          description,
+          currentMaxBid,
+          endTimestamp: this.getTimeLeft(endTimestamp.toString()),
+          imgUrl: 'images/placeholder.jpg'
+        } as Auction))
+        ))
+      ),
       switchMap(auctionDetails => forkJoin(...auctionDetails)));
   }
 
   getMySelling(): Observable<Auction[]> {
     return this.metaMaskService.getSellerAuctions().pipe(
       map((addresses: string[]) => addresses.map(address => forkJoin([
+          this.getAuctionIndexOfAddress(address),
           this.metaMaskService.getAuctionDescriptionFromAddress(address),
-          this.metaMaskService.getAuctionCurrentMaxBidFromAddress(address),
+          this.metaMaskService.getAuctionCurrentSalePrice(address),
           this.metaMaskService.getAuctionTimestampFromAddress(address)
         ]).pipe(
-        map(([description, currentMaxBid, endTimestamp]) => ({
+        map(([auctionIndex, description, currentMaxBid, endTimestamp]) => ({
+          address,
+          auctionIndex,
           description,
           currentMaxBid,
           endTimestamp: this.getTimeLeft(endTimestamp.toString()),
@@ -73,11 +79,14 @@ export class AuctionService {
   getMyBidding(): Observable<Auction[]> {
     return this.metaMaskService.getBidderAuctions().pipe(
       map((addresses: string[]) => addresses.map(address => forkJoin([
+          this.getAuctionIndexOfAddress(address),
           this.metaMaskService.getAuctionDescriptionFromAddress(address),
-          this.metaMaskService.getAuctionCurrentMaxBidFromAddress(address),
+          this.metaMaskService.getAuctionCurrentSalePrice(address),
           this.metaMaskService.getAuctionTimestampFromAddress(address)
         ]).pipe(
-        map(([description, currentMaxBid, endTimestamp]) => ({
+        map(([auctionIndex, description, currentMaxBid, endTimestamp]) => ({
+          address,
+          auctionIndex,
           description,
           currentMaxBid,
           endTimestamp: this.getTimeLeft(endTimestamp.toString()),
@@ -88,8 +97,16 @@ export class AuctionService {
       switchMap(auctionDetails => forkJoin(...auctionDetails)));
   }
 
-  placeBid(): void {
+  placeBid(ether: number, auctionIndex: number): void {
+    console.log(`place bid ${ether} ether on index ${auctionIndex}`);
+    // TODO: Should return wheter a bid was successfull or not..
+  }
 
+  getAuctionIndexOfAddress(address: string): Observable<number> {
+    return this.metaMaskService.getAuctions().pipe(
+      map((addresses: string[]) => {
+        return addresses.indexOf(address);
+      }));
   }
 
   getTimeLeft(endTimestamp: string) {
@@ -119,7 +136,8 @@ export class AuctionService {
     }
     if (seconds > 0) {
       return `${seconds}s`;
+    } else {
+      return 'auction ended';
     }
-    else { return 'auction ended'; }
   }
 }

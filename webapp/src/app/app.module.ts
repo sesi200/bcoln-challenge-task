@@ -16,6 +16,8 @@ import { ItemDisplayerComponent } from './components/item-displayer/item-display
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {SafePipe} from './pipes/safestyle.pipe';
 import {MetaMaskService} from './services/metamask.service';
+import {EtherPipe} from './pipes/ether.pipe';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import {MetaMaskService} from './services/metamask.service';
     WrapperComponent,
     NavComponent,
     ItemDisplayerComponent,
-    SafePipe
+    SafePipe,
+    EtherPipe
   ],
   imports: [
     BrowserModule,
@@ -36,9 +39,10 @@ import {MetaMaskService} from './services/metamask.service';
     NgbTooltipModule,
     NgxPageScrollCoreModule.forRoot({duration: 750}),
     FontAwesomeModule,
+    FormsModule,
     // NgxPageScrollModule
   ],
-  providers: [MetaMaskService],
+  providers: [MetaMaskService, EtherPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

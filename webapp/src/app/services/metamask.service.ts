@@ -415,8 +415,8 @@ export class MetaMaskService {
     return await this.auctionHouseContract.methods.create_first_price_auction(description, durationInSec, minBidWei).send(transactionObj);
   }
 
-  public async getAuctions() {
-    return await this.auctionHouseContract.methods.auctions().call();
+  public getAuctions() {
+    return from(this.auctionHouseContract.methods.all_auctions().call());
   }
 
   public getAuctionAddress(auctionIndex: number) {
@@ -452,6 +452,10 @@ export class MetaMaskService {
 
   public getAuctionCurrentMaxBidFromAddress(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_max_bid().call());
+  }
+
+  public getAuctionCurrentSalePrice(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_sale_price().call());
   }
 
   public getAuctionEndTimestamp(auctionIndex: number) {

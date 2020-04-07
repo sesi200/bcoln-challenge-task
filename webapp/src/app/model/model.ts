@@ -1,4 +1,6 @@
 export class Auction {
+  address: string;
+  auctionIndex: number;
   seller: string;
   description: string;
   endTimestamp: string;

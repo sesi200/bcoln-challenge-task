@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Auction} from '../model/model';
-import {forkJoin, from, Observable, of} from 'rxjs';
-import {first, map, min, switchMap, tap} from 'rxjs/operators';
+import {forkJoin, Observable} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {MetaMaskService} from './metamask.service';
-
 
 
 export enum METHODS {

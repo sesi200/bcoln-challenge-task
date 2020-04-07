@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Auction} from '../../model/model';
 import {AuctionService, METHODS} from '../../services/auction.service';
-import {MetaMaskService} from 'src/app/services/metamask.service';
 import {Observable} from 'rxjs';
 
 @Component({

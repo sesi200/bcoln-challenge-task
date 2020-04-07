@@ -4,8 +4,6 @@ import {fas} from '@fortawesome/free-solid-svg-icons';
 import {fab} from '@fortawesome/free-brands-svg-icons';
 import {PageScrollService} from 'ngx-page-scroll-core';
 import {DOCUMENT} from '@angular/common';
-import {MetaMaskService} from './services/metamask.service';
-import {first} from 'rxjs/operators';
 
 library.add(fas, fab);
 // alternative approach to fix SSR

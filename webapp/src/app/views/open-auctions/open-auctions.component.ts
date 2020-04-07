@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {AuctionService, METHODS} from '../../services/auction.service';
 import {Auction} from '../../model/model';
 import {Observable} from 'rxjs';
-import {MetaMaskService} from '../../services/metamask.service';
-import {first} from 'rxjs/operators';
 
 @Component({
   selector: 'app-open-auctions',

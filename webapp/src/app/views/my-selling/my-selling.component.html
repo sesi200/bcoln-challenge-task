@@ -1,3 +1,4 @@
 <ng-container *ngFor="let auction of openAuctions$|async">
   <app-item-displayer [auction]="auction"></app-item-displayer>
 </ng-container>
+<button class="btn btn-success rounded-0 float-right mr-2" (click)="newAuction()"><fa-icon icon="plus"></fa-icon> New Auction</button>

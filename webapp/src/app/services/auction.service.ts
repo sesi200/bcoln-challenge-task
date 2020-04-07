@@ -102,6 +102,11 @@ export class AuctionService {
     // TODO: Should return wheter a bid was successfull or not..
   }
 
+  newAuction(auction: Auction): void {
+    console.log('new auction:');
+    console.log(auction);
+    // TODO: Should return wheter a bid was successfull or not..
+  }
   getAuctionIndexOfAddress(address: string): Observable<number> {
     return this.metaMaskService.getAuctions().pipe(
       map((addresses: string[]) => {

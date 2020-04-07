@@ -17,7 +17,13 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {SafePipe} from './pipes/safestyle.pipe';
 import {MetaMaskService} from './services/metamask.service';
 import {EtherPipe} from './pipes/ether.pipe';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { NewAuctionComponent } from './views/my-selling/dialog/new-auction/new-auction.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatDatetimepickerModule} from '@mat-datetimepicker/core';
+import {MatMomentDatetimeModule} from '@mat-datetimepicker/moment';
 
 @NgModule({
   declarations: [
@@ -29,7 +35,8 @@ import {FormsModule} from '@angular/forms';
     NavComponent,
     ItemDisplayerComponent,
     SafePipe,
-    EtherPipe
+    EtherPipe,
+    NewAuctionComponent
   ],
   imports: [
     BrowserModule,
@@ -40,9 +47,16 @@ import {FormsModule} from '@angular/forms';
     NgxPageScrollCoreModule.forRoot({duration: 750}),
     FontAwesomeModule,
     FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatMomentDatetimeModule,
+    MatDatetimepickerModule
     // NgxPageScrollModule
   ],
   providers: [MetaMaskService, EtherPipe],
+  entryComponents: [NewAuctionComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

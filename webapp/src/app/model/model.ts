@@ -7,5 +7,6 @@ export class Auction {
   currentMaxBidder: string;
   currentMaxBid: number;
   minBid: number;
+  minBidStep: number;
   imgUrl: string;
 }

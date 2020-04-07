@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create a new auction!</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="auctionForm" (ngSubmit)="createAuction()">
+    <div class="row">
+      <div class="col-6">
+        <mat-form-field class="w-100">
+          <input matInput type="text" placeholder="Title" formControlName="description" required>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="w-100">
+          <input matInput type="text" placeholder="Image Url" formControlName="imgUrl">
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="w-100">
+          <input matInput type="number" placeholder="Minimal Bid" formControlName="minBid" required>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="w-100">
+          <input matInput type="number" placeholder="Minimal Bid Step" formControlName="minBidStep" required>
+        </mat-form-field>
+      </div>
+      <div class="col-6">
+        <mat-form-field class="w-100">
+<!--          <input matInput placeholder="Enddate"  type="datetime-local" formControlName="endTimestamp">-->
+          <mat-placeholder>Start DateTime</mat-placeholder>
+          <mat-datetimepicker-toggle [for]="datetimePicker" matSuffix></mat-datetimepicker-toggle>
+          <mat-datetimepicker #datetimePicker type="datetime" openOnFocus="true" timeInterval="5"></mat-datetimepicker>
+          <input matInput formControlName="endTimestamp" [matDatetimepicker]="datetimePicker" required autocomplete="false">
+        <mat-error>
+          Date must be in the future.
+        </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-success rounded-0" [disabled]="!auctionForm.valid"><fa-icon icon="save" class="mr-1"></fa-icon> Save</button>
+      </div>
+    </div>
+  </form>
+</div>

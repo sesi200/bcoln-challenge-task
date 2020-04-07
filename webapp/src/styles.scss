@@ -63,3 +63,26 @@ body {
   background-color: $dbay-orange !important;
   border-color: $dbay-orange !important;
 }
+
+
+.dbay-modal .modal-content {
+  border-radius: 0px !important;
+}
+
+.dbay-modal .modal-header {
+  background-color: $dbay-orange !important;
+  border-radius: 0px !important;
+  color: #fafafa;
+}
+
+.dbay-modal .close {
+  color: #fafafa !important;
+  outline: 0;
+}
+.cdk-overlay-container {
+  z-index: 2000 !important;
+}
+
+::ng-deep .cdk-overlay-container mat-datepicker-content{
+  z-index:2000;
+}

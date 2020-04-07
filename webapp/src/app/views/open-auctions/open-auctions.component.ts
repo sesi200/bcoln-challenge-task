@@ -14,7 +14,7 @@ export class OpenAuctionsComponent implements OnInit {
 
   openAuctions$: Observable<Auction[]>;
 
-  constructor(private auctionService: AuctionService, private metaMaskService: MetaMaskService) { }
+  constructor(private auctionService: AuctionService) { }
 
   ngOnInit(): void {
     this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);

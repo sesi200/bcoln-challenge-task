@@ -450,6 +450,10 @@ export class MetaMaskService {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.description().call());
   }
 
+  public getAuctionCurrentMaxBidFromAddress(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_max_bid().call());
+  }
+
   public getAuctionEndTimestamp(auctionIndex: number) {
     return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call()).pipe(
       map((auctionAddress: string) => new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress)),

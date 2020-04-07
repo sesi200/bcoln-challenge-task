@@ -14,7 +14,7 @@ export class MyBiddingComponent implements OnInit {
 
   openAuctions$: Observable<Auction[]>;
 
-  constructor(private metaMaskService: MetaMaskService, private auctionService: AuctionService) {
+  constructor(private auctionService: AuctionService) {
   }
 
   ngOnInit() {

@@ -105,6 +105,8 @@ export class AuctionService {
   newAuction(auction: Auction): void {
     console.log('new auction:');
     console.log(auction);
+    this.metaMaskService.createFirstPriceAuction(auction.description, Number(auction.endTimestamp), this.convertEthToWei(auction.minBid), this.convertEthToWei(auction.minBidStep))
+      .pipe(first()).subscribe();
     // TODO: Should return whether a bid was successful or not..
   }
   getAuctionIndexOfAddress(address: string): Observable<number> {
@@ -112,6 +114,16 @@ export class AuctionService {
       map((addresses: string[]) => {
         return addresses.indexOf(address);
       }));
+  }
+
+  convertEthToWei(eth: number) {
+    const ethWeiFactor = 1000000000000000000;
+    return Math.floor(eth * ethWeiFactor);
+  }
+
+  convertWeiToEth(wei: number) {
+    const ethWeiFactor = 1000000000000000000;
+    return wei / ethWeiFactor;
   }
 
   getTimeLeft(endTimestamp: string) {

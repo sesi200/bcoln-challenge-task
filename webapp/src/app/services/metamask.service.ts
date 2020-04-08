@@ -63,6 +63,100 @@ export class MetaMaskService {
       type: 'event'
     },
     {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'bid',
+      outputs: [],
+      stateMutability: 'payable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'close_auction',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string'
+        },
+        {
+          internalType: 'uint256',
+          name: 'auction_end_timestamp',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_wei',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_step_wei',
+          type: 'uint256'
+        }
+      ],
+      name: 'create_first_price_auction',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string'
+        },
+        {
+          internalType: 'uint256',
+          name: 'auction_end_timestamp',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_wei',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_step_wei',
+          type: 'uint256'
+        }
+      ],
+      name: 'create_second_price_auction',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
       inputs: [],
       name: 'all_auctions',
       outputs: [
@@ -143,90 +237,6 @@ export class MetaMaskService {
         }
       ],
       stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'auction_index',
-          type: 'uint256'
-        }
-      ],
-      name: 'bid',
-      outputs: [],
-      stateMutability: 'payable',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'auction_index',
-          type: 'uint256'
-        }
-      ],
-      name: 'close_auction',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'string',
-          name: 'description',
-          type: 'string'
-        },
-        {
-          internalType: 'uint256',
-          name: 'duration_in_seconds',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'minimum_bid_wei',
-          type: 'uint256'
-        }
-      ],
-      name: 'create_first_price_auction',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'nonpayable',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'string',
-          name: 'description',
-          type: 'string'
-        },
-        {
-          internalType: 'uint256',
-          name: 'duration_in_seconds',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'minimum_bid_wei',
-          type: 'uint256'
-        }
-      ],
-      name: 'create_second_price_auction',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'nonpayable',
       type: 'function'
     },
     {
@@ -401,16 +411,10 @@ export class MetaMaskService {
     );
   }
 
-/*  public async bid(auctionIndex: number) {
-    const account = await this.getCurrentAccount();
-    const transactionObj = await MetaMaskService.getTransactionObject(account, 5000000, 0);
-    return await this.auctionHouseContract.methods.bid(auctionIndex).send(transactionObj);
-  }*/
-
-  public async createFirstPriceAuction(description: string, durationInSec: number, minBidWei: number) {
+  public createFirstPriceAuction(description: string, endTimestamp: number, minBidWei: number, minStepWei: number) {
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount =>
-        this.auctionHouseContract.methods.create_first_price_auction(description, durationInSec, minBidWei)
+        this.auctionHouseContract.methods.create_first_price_auction(description, endTimestamp, minBidWei, minStepWei)
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 

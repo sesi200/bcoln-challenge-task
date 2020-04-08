@@ -366,14 +366,12 @@ export class MetaMaskService {
 
   public auctionHouseContract: any;
 
-  static getTransactionObject(FROM: Observable<string>, GAS: number, VALUE: number) {
-    return FROM.pipe(
-      map(fromAddress => ({
-        from: fromAddress,
+  static getTransactionObject(FROM: string, GAS: number, VALUE: number) {
+    return {
+        from: FROM,
         gas: GAS,
         value: VALUE
-      }))
-    );
+      };
   }
 
   init() {
@@ -403,16 +401,17 @@ export class MetaMaskService {
     );
   }
 
-  public async bid(auctionIndex: number) {
+/*  public async bid(auctionIndex: number) {
     const account = await this.getCurrentAccount();
     const transactionObj = await MetaMaskService.getTransactionObject(account, 5000000, 0);
     return await this.auctionHouseContract.methods.bid(auctionIndex).send(transactionObj);
-  }
+  }*/
 
   public async createFirstPriceAuction(description: string, durationInSec: number, minBidWei: number) {
-    const account = await this.getCurrentAccount();
-    const transactionObj = await MetaMaskService.getTransactionObject(account, 5000000, 0);
-    return await this.auctionHouseContract.methods.create_first_price_auction(description, durationInSec, minBidWei).send(transactionObj);
+    return this.getCurrentAccount().pipe(
+      switchMap(currentAccount =>
+        this.auctionHouseContract.methods.create_first_price_auction(description, durationInSec, minBidWei)
+          .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 
   public getAuctions() {
@@ -458,7 +457,7 @@ export class MetaMaskService {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_sale_price().call());
   }
 
-  public getAuctionEndTimestamp(auctionIndex: number) {
+  public getAuctionEndTimestampFromIndex(auctionIndex: number) {
     return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call()).pipe(
       map((auctionAddress: string) => new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress)),
       switchMap(auctionContract => from(auctionContract.methods.end_timestamp().call())
@@ -467,5 +466,11 @@ export class MetaMaskService {
 
   public getAuctionTimestampFromAddress(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.end_timestamp().call());
+  }
+
+  public bidForAuction(auctionAddress: string, value: number) {
+    return this.getCurrentAccount().pipe(switchMap(currentAccount =>
+      new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).
+      send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
   }
 }

@@ -16,9 +16,6 @@ export class OpenAuctionsComponent implements OnInit {
 
   ngOnInit(): void {
     this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);
-    this.auctionService.getMethod(METHODS.OpenAuctions).subscribe(value => {
-      console.log(value);
-    });
   }
 
 }

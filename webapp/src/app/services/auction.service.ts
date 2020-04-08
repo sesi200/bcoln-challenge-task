@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Auction} from '../model/model';
 import {forkJoin, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {first, map, switchMap, tap} from 'rxjs/operators';
 import {MetaMaskService} from './metamask.service';
 
 
@@ -42,7 +42,7 @@ export class AuctionService {
           this.metaMaskService.getAuctionCurrentSalePrice(address),
           this.metaMaskService.getAuctionTimestampFromAddress(address)
         ]).pipe(
-        map(([auctionIndex, description, currentMaxBid, endTimestamp]) => ({
+        map(([ auctionIndex, description, currentMaxBid, endTimestamp]) => ({
           address,
           auctionIndex,
           description,
@@ -97,15 +97,15 @@ export class AuctionService {
       switchMap(auctionDetails => forkJoin(...auctionDetails)));
   }
 
-  placeBid(ether: number, auctionIndex: number): void {
-    console.log(`place bid ${ether} ether on index ${auctionIndex}`);
-    // TODO: Should return wheter a bid was successfull or not..
+  placeBid(ether: number, auctionAddress: string): void {
+    this.metaMaskService.bidForAuction(auctionAddress, ether).pipe(first()).subscribe();
+    // TODO: Should return whether a bid was successful or not..
   }
 
   newAuction(auction: Auction): void {
     console.log('new auction:');
     console.log(auction);
-    // TODO: Should return wheter a bid was successfull or not..
+    // TODO: Should return whether a bid was successful or not..
   }
   getAuctionIndexOfAddress(address: string): Observable<number> {
     return this.metaMaskService.getAuctions().pipe(
@@ -116,6 +116,10 @@ export class AuctionService {
 
   getTimeLeft(endTimestamp: string) {
     const currentTimestamp = Math.floor(new Date().getTime() / 1000);
+
+    if (Number(endTimestamp) < currentTimestamp) {
+      return `Auction ended`;
+    }
 
     let diff = (Number(endTimestamp) - currentTimestamp);
 
@@ -142,7 +146,7 @@ export class AuctionService {
     if (seconds > 0) {
       return `${seconds}s`;
     } else {
-      return 'auction ended';
+      return 'Auction ended';
     }
   }
 }

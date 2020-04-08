@@ -21,7 +21,7 @@ export class ItemDisplayerComponent implements OnInit {
   }
 
   placeBid(){
-    this.auctionSerice.placeBid(this.bidValue, this.auction.auctionIndex);
+    this.auctionSerice.placeBid(this.bidValue, this.auction.address);
   }
 
 }

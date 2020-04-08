@@ -283,6 +283,19 @@ export class MetaMaskService {
     },
     {
       inputs: [],
+      name: 'auction_closed',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
       name: 'current_max_bid',
       outputs: [
         {
@@ -347,8 +360,40 @@ export class MetaMaskService {
       type: 'function'
     },
     {
+      inputs: [
+        {
+          internalType: 'address payable',
+          name: 'check',
+          type: 'address'
+        }
+      ],
+      name: 'is_bidder',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
       inputs: [],
       name: 'min_bid',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'min_bid_step',
       outputs: [
         {
           internalType: 'uint256',
@@ -470,6 +515,10 @@ export class MetaMaskService {
 
   public getAuctionTimestampFromAddress(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.end_timestamp().call());
+  }
+
+  public getAuctionMinBidStepFromAddress(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.min_bid_step().call());
   }
 
   public bidForAuction(auctionAddress: string, value: number) {

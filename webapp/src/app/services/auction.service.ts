@@ -40,13 +40,15 @@ export class AuctionService {
           this.getAuctionIndexOfAddress(address),
           this.metaMaskService.getAuctionDescriptionFromAddress(address),
           this.metaMaskService.getAuctionCurrentSalePrice(address),
+          this.metaMaskService.getAuctionMinBidStepFromAddress(address),
           this.metaMaskService.getAuctionTimestampFromAddress(address)
         ]).pipe(
-        map(([ auctionIndex, description, currentMaxBid, endTimestamp]) => ({
+        map(([ auctionIndex, description, currentMaxBid, minBidStep, endTimestamp]) => ({
           address,
           auctionIndex,
           description,
           currentMaxBid,
+          minBidStep,
           endTimestamp: this.getTimeLeft(endTimestamp.toString()),
           imgUrl: 'images/placeholder.jpg'
         } as Auction))
@@ -61,13 +63,15 @@ export class AuctionService {
           this.getAuctionIndexOfAddress(address),
           this.metaMaskService.getAuctionDescriptionFromAddress(address),
           this.metaMaskService.getAuctionCurrentSalePrice(address),
+          this.metaMaskService.getAuctionMinBidStepFromAddress(address),
           this.metaMaskService.getAuctionTimestampFromAddress(address)
         ]).pipe(
-        map(([auctionIndex, description, currentMaxBid, endTimestamp]) => ({
+        map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp]) => ({
           address,
           auctionIndex,
           description,
           currentMaxBid,
+          minBidStep,
           endTimestamp: this.getTimeLeft(endTimestamp.toString()),
           imgUrl: 'images/placeholder.jpg'
         } as Auction))
@@ -82,13 +86,15 @@ export class AuctionService {
           this.getAuctionIndexOfAddress(address),
           this.metaMaskService.getAuctionDescriptionFromAddress(address),
           this.metaMaskService.getAuctionCurrentSalePrice(address),
+          this.metaMaskService.getAuctionMinBidStepFromAddress(address),
           this.metaMaskService.getAuctionTimestampFromAddress(address)
         ]).pipe(
-        map(([auctionIndex, description, currentMaxBid, endTimestamp]) => ({
+        map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp]) => ({
           address,
           auctionIndex,
           description,
           currentMaxBid,
+          minBidStep,
           endTimestamp: this.getTimeLeft(endTimestamp.toString()),
           imgUrl: 'images/placeholder.jpg'
         } as Auction))
@@ -105,8 +111,12 @@ export class AuctionService {
   newAuction(auction: Auction): void {
     console.log('new auction:');
     console.log(auction);
-    this.metaMaskService.createFirstPriceAuction(auction.description, Number(auction.endTimestamp), this.convertEthToWei(auction.minBid), this.convertEthToWei(auction.minBidStep))
-      .pipe(first()).subscribe();
+    this.metaMaskService.createFirstPriceAuction(
+      auction.description,
+      Number(auction.endTimestamp),
+      this.convertEthToWei(auction.minBid),
+      this.convertEthToWei(auction.minBidStep)
+    ).pipe(first()).subscribe();
     // TODO: Should return whether a bid was successful or not..
   }
   getAuctionIndexOfAddress(address: string): Observable<number> {

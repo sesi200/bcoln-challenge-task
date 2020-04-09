@@ -1,4 +1,109 @@
 @import '_vars';
+@import "~@angular/material/theming";
+@include mat-core();
+/* For use in src/lib/core/theming/_palette.scss */
+$md-primary: (
+  50 : #f8efe0,
+  100 : #eed6b3,
+  200 : #e3bb80,
+  300 : #d8a04d,
+  400 : #cf8b26,
+  500 : #c77700,
+  600 : #c16f00,
+  700 : #ba6400,
+  800 : #b35a00,
+  900 : #a64700,
+  A100 : #ffe1d0,
+  A200 : #ffc09d,
+  A400 : #ff9f6a,
+  A700 : #ff8f51,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+
+$md-accent: (
+  50 : #ebebeb,
+  100 : #cecece,
+  200 : #aeaeae,
+  300 : #8d8d8d,
+  400 : #747474,
+  500 : #5c5c5c,
+  600 : #545454,
+  700 : #4a4a4a,
+  800 : #414141,
+  900 : #303030,
+  A100 : #f39191,
+  A200 : #ee6363,
+  A400 : #ff1f1f,
+  A700 : #ff0505,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #ffffff,
+    A700 : #ffffff,
+  )
+);
+
+
+$md-warning: (
+  50 : #f9e0e0,
+  100 : #f0b3b3,
+  200 : #e68080,
+  300 : #db4d4d,
+  400 : #d42626,
+  500 : #cc0000,
+  600 : #c70000,
+  700 : #c00000,
+  800 : #b90000,
+  900 : #ad0000,
+  A100 : #ffd7d7,
+  A200 : #ffa4a4,
+  A400 : #ff7171,
+  A700 : #ff5858,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #ffffff,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  )
+);
+$dbay-app-theme: mat-light-theme(mat-palette($md-primary), mat-palette($md-accent), mat-palette($md-warning));
+
+@include angular-material-theme($dbay-app-theme);
 
 /* You can add global styles to this file, and also import other style files */
 

@@ -104,7 +104,8 @@ export class AuctionService {
   }
 
   placeBid(ether: number, auctionAddress: string): void {
-    this.metaMaskService.bidForAuction(auctionAddress, ether).pipe(first()).subscribe();
+    console.log(ether);
+    this.metaMaskService.bidForAuction(auctionAddress, this.convertEthToWei(ether)).pipe(first()).subscribe();
     // TODO: Should return whether a bid was successful or not..
   }
 
@@ -128,7 +129,9 @@ export class AuctionService {
 
   convertEthToWei(eth: number) {
     const ethWeiFactor = 1000000000000000000;
+    // const ethWeiFactor = 100000000;
     return Math.floor(eth * ethWeiFactor);
+    // return eth;
   }
 
   convertWeiToEth(wei: number) {

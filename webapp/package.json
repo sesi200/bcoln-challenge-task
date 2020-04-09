@@ -36,6 +36,7 @@
     "moment": "^2.24.0",
     "ngx-page-scroll": "^7.0.1",
     "ngx-page-scroll-core": "^7.0.1",
+    "ngx-pagination": "^5.0.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "web3": "^1.2.6",

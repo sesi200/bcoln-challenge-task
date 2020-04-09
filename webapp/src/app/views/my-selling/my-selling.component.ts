@@ -13,8 +13,10 @@ import {NewAuctionComponent} from './dialog/new-auction/new-auction.component';
 export class MySellingComponent implements OnInit {
 
   openAuctions$: Observable<Auction[]>;
+  p = 1;
 
-  constructor(private auctionService: AuctionService, private modalService: NgbModal) {}
+  constructor(private auctionService: AuctionService, private modalService: NgbModal) {
+  }
 
   ngOnInit(): void {
     this.openAuctions$ = this.auctionService.getMethod(METHODS.Sellings);
@@ -27,10 +29,14 @@ export class MySellingComponent implements OnInit {
     // //   modalRef.componentInstance.organisation = org;
     // // }
     // // modalRef.componentInstance.organisationValidator = this.orgValidator;
-    // modalRef.result.then((resolveOutput) => {
-    //   // this.loadOrganisations();
-    // }, (rejectOutput) => {
-    // });
+    modalRef.result.then((resolveOutput) => {
+
+      const int = setInterval(() => {
+        this.openAuctions$ = this.auctionService.getMethod(METHODS.Sellings);
+        clearInterval(int);
+      }, 3000);
+    }, (rejectOutput) => {
+    });
   }
 
 }

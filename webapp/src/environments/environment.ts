@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   mainAuctionHouseAddress: '',
   ropstenAuctionHouseAddress: '',
-  privateAuctionHouseAddress: '0xb222cEEA9AEf553a158f348135eB10Cd4f9c298B'
+  privateAuctionHouseAddress: '0xD78781849cf8Ba328A26193302B4DE1A5584b52b'
 };
 
 /*

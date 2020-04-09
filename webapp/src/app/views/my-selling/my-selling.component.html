@@ -1,4 +1,15 @@
-<ng-container *ngFor="let auction of openAuctions$|async">
-  <app-item-displayer [auction]="auction"></app-item-displayer>
-</ng-container>
-<button class="btn btn-success rounded-0 float-right mr-2" (click)="newAuction()"><fa-icon icon="plus"></fa-icon> New Auction</button>
+<div class="row">
+  <div class="col">
+    <button class="btn btn-success rounded-0 float-right mr-2" (click)="newAuction()"><fa-icon icon="plus"></fa-icon> New Auction</button>
+  </div>
+</div>
+
+<div class="min-height">
+  <mat-spinner class="mx-auto" *ngIf="!(openAuctions$ | async)"></mat-spinner>
+
+  <ng-container *ngFor="let auction of openAuctions$|async | paginate: { itemsPerPage: 5, currentPage: p }">
+    <app-item-displayer [auction]="auction"></app-item-displayer>
+  </ng-container>
+
+  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+</div>

@@ -5,11 +5,13 @@ import {environment} from '../../environments/environment';
 import {from, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 
+
 @Injectable()
 export class MetaMaskService {
 
   constructor(@Inject(WEB3) private web3: Web3) {
   }
+
 
   AUCTIONHOUSE_ABI: any = [
     {
@@ -423,10 +425,10 @@ export class MetaMaskService {
 
   static getTransactionObject(FROM: string, GAS: number, VALUE: number) {
     return {
-        from: FROM,
-        gas: GAS,
-        value: VALUE
-      };
+      from: FROM,
+      gas: GAS,
+      value: VALUE
+    };
   }
 
   init() {
@@ -435,19 +437,19 @@ export class MetaMaskService {
     }
     return from(this.web3.eth.net.getNetworkType()).pipe(
       tap(currentNetwork => {
-        switch (currentNetwork) {
-          case 'main':
-            this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.mainAuctionHouseAddress);
-            break;
-          case 'ropsten':
-            this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.ropstenAuctionHouseAddress);
-            break;
-          case 'private':
-            this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.privateAuctionHouseAddress);
-            break;
+          switch (currentNetwork) {
+            case 'main':
+              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.mainAuctionHouseAddress);
+              break;
+            case 'ropsten':
+              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.ropstenAuctionHouseAddress);
+              break;
+            case 'private':
+              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.privateAuctionHouseAddress);
+              break;
+          }
         }
-        }
-    ));
+      ));
   }
 
   public getCurrentAccount() {
@@ -457,9 +459,18 @@ export class MetaMaskService {
   }
 
   public createFirstPriceAuction(description: string, endTimestamp: number, minBidWei: number, minStepWei: number) {
+//     // Decimal
+//     const decimals = Web3.utils.toBN(18);
+//
+// // Amount of token
+//     const tokenAmount = Web3.utils.toBN(10000000000);
+//     const tokenAmountHex = '0x' + minBidWei.mul(Web3.utils.toBN(10).pow(decimals)).toString('hex');
+    const minBid = Web3.utils.toWei(Web3.utils.toBN(minBidWei), 'wei');
+    const minBidStep = Web3.utils.toWei(Web3.utils.toBN(minStepWei), 'wei');
+
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount =>
-        this.auctionHouseContract.methods.create_first_price_auction(description, endTimestamp, minBidWei, minStepWei)
+        this.auctionHouseContract.methods.create_first_price_auction(description, endTimestamp, minBid, minBidStep)
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 
@@ -491,7 +502,7 @@ export class MetaMaskService {
     return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call()).pipe(
       map((auctionAddress: string) => new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress)),
       switchMap(auctionContract => from(auctionContract.methods.description().call())
-    ));
+      ));
   }
 
   public getAuctionDescriptionFromAddress(auctionAddress: string) {
@@ -523,7 +534,6 @@ export class MetaMaskService {
 
   public bidForAuction(auctionAddress: string, value: number) {
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
-      new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).
-      send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
+      new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
   }
 }

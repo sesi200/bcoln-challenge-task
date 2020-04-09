@@ -24,6 +24,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDatetimepickerModule} from '@mat-datetimepicker/core';
 import {MatMomentDatetimeModule} from '@mat-datetimepicker/moment';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,9 @@ import {MatMomentDatetimeModule} from '@mat-datetimepicker/moment';
     MatInputModule,
     MatDatepickerModule,
     MatMomentDatetimeModule,
-    MatDatetimepickerModule
+    MatDatetimepickerModule,
+    MatProgressSpinnerModule,
+    NgxPaginationModule
     // NgxPageScrollModule
   ],
   providers: [MetaMaskService, EtherPipe],

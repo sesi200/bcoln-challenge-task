@@ -435,6 +435,7 @@ export class MetaMaskService {
     if (this.auctionHouseContract !== undefined) {
       return of(undefined);
     }
+    const privateAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.privateAuctionHouseAddress;
     return from(this.web3.eth.net.getNetworkType()).pipe(
       tap(currentNetwork => {
           switch (currentNetwork) {
@@ -445,7 +446,7 @@ export class MetaMaskService {
               this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.ropstenAuctionHouseAddress);
               break;
             case 'private':
-              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.privateAuctionHouseAddress);
+              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, privateAddress);
               break;
           }
         }
@@ -535,5 +536,11 @@ export class MetaMaskService {
   public bidForAuction(auctionAddress: string, value: number) {
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
       new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
+  }
+
+  public closeAuction(auctionAddress: string) {
+    console.log(auctionAddress);
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.close_auction().call());
+    // return from(this.auctionHouseContract.methods.close_auction(auctionIndex).call());
   }
 }

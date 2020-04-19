@@ -109,6 +109,10 @@ export class AuctionService {
     // TODO: Should return whether a bid was successful or not..
   }
 
+  closeAuction(auctionAddress: string): void {
+    this.metaMaskService.closeAuction(auctionAddress).subscribe();
+  }
+
   newAuction(auction: Auction): void {
     console.log('new auction:');
     console.log(auction);

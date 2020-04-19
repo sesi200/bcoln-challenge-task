@@ -10,7 +10,7 @@
       </div>
       <div class="row">
         <div class="col-6"><span class="item-price"><fa-icon  [icon]="['fab','ethereum']" class="pointer" ngbTooltip="Price"></fa-icon> {{auction.currentMaxBid | etherConverter | number: '1.2-5'}}</span></div>
-        <div class="col-6">
+        <div class="col-6" *ngIf="auction.endTimestamp !== 'Auction ended'">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text"><fa-icon [icon]="['fab','ethereum']"></fa-icon></span>
@@ -20,6 +20,9 @@
               <button class="btn btn-success rounded-0" (click)="placeBid()">Place Bid</button>
             </div>
           </div>
+        </div>
+        <div class="col-6" *ngIf="auction.endTimestamp === 'Auction ended'">
+            <button class="btn btn-success rounded-0 float-right" (click)="claim()">Claim</button>
         </div>
       </div>
     </div>

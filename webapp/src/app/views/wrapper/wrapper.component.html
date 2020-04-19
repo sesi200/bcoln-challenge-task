@@ -1,5 +1,11 @@
 <div class="container mt-4">
   <h1 class="title black">dBay<span>.</span></h1>
+  <div class="row">
+    <div class="col-12">
+      <input type="text" [(ngModel)]="auctionHouseAddress" placeholder="Auctionhouse Address"/>
+      <button (click)="setNewLocalAdress()">Set Address</button>
+    </div>
+  </div>
   <div class="row py-4">
     <div class="col-3 border-right">
       <app-nav [activeNav]="activeNav"></app-nav>

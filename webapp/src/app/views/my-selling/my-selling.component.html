@@ -5,7 +5,7 @@
 </div>
 
 <div class="min-height">
-  <mat-spinner class="mx-auto" *ngIf="!(openAuctions$ | async)"></mat-spinner>
+  <mat-spinner class="mx-auto" *ngIf="(openAuctions$ | async)"></mat-spinner>
 
   <ng-container *ngFor="let auction of openAuctions$|async | paginate: { itemsPerPage: 5, currentPage: p }">
     <app-item-displayer [auction]="auction"></app-item-displayer>

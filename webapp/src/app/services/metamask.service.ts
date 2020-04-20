@@ -450,7 +450,10 @@ export class MetaMaskService {
               break;
           }
         }
-      ));
+      ),
+      tap(() => this.newBidEvent()),
+      tap(() => this.auctionClosedEvent())
+    );
   }
 
   public getCurrentAccount() {
@@ -542,10 +545,23 @@ export class MetaMaskService {
       new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
   }
 
+  public bidForAuctionByIndex(auctionIndex: number, value: number) {
+    return this.getCurrentAccount().pipe(switchMap(currentAccount =>
+       this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
+  }
+
   public closeAuction(auctionIndex: number) {
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount =>
         this.auctionHouseContract.methods.close_auction(auctionIndex)
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
+  }
+
+  public newBidEvent() {
+    this.auctionHouseContract.events.NewBid().on('data', (event) => console.log(event.returnValues)).on('error', (event) => console.error(event));
+  }
+
+  public auctionClosedEvent() {
+    this.auctionHouseContract.events.AuctionClosed().on('data', (event) => console.log(event.returnValues)).on('error', (event) => console.error(event));
   }
 }

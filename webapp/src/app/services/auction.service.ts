@@ -222,10 +222,10 @@ export class AuctionService {
     );
   }
 
-  placeBid(ether: number, auctionAddress: string): void {
+  placeBid(ether: number, auctionIndex: number): void {
     console.log(ether);
-    this.metaMaskService.bidForAuction(auctionAddress, this.convertEthToWei(ether)).pipe(first()).subscribe(value => {
-      window.location.reload();
+    this.metaMaskService.bidForAuctionByIndex(auctionIndex, this.convertEthToWei(ether)).pipe(first()).subscribe(value => {
+      //window.location.reload();
     });
 
     // TODO: Should return whether a bid was successful or not..

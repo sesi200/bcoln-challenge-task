@@ -6,22 +6,24 @@
     <div class="col-10">
       <div class="row">
         <div class="col-8"><h3 class="item-title">{{auction.description}}</h3></div>
-        <div class="col-4 text-right"><span class="item-time"><fa-icon icon="clock" class="pointer" ngbTooltip="Time left"></fa-icon> {{auction.endTimestamp}}</span></div>
+        <div class="col-4 text-right"><span class="item-time"><fa-icon icon="clock" class="pointer" ngbTooltip="Time left"></fa-icon> {{timeLeft | timeleft}}</span></div>
       </div>
       <div class="row">
         <div class="col-6"><span class="item-price"><fa-icon  [icon]="['fab','ethereum']" class="pointer" ngbTooltip="Price"></fa-icon> {{auction.currentMaxBid | etherConverter | number: '1.2-5'}}</span></div>
-        <div class="col-6" *ngIf="auction.endTimestamp !== 'Auction ended'">
-          <div class="input-group mb-3">
+        <div class="col-6" *ngIf="timeLeft !== -1">
+          <span *ngIf="auction.iAmMaxBidder" class="float-right winning">You have the highest bid</span>
+          <div class="input-group">
             <div class="input-group-prepend">
               <span class="input-group-text"><fa-icon [icon]="['fab','ethereum']"></fa-icon></span>
             </div>
-            <input type="text" class="form-control" placeholder="Amount" [(ngModel)]="bidValue">
+            <input type="number" class="form-control" placeholder="Amount" [(ngModel)]="bid" (ngModelChange)="validate()">
             <div class="input-group-append">
-              <button class="btn btn-success rounded-0" (click)="placeBid()">Place Bid</button>
+              <button class="btn btn-success rounded-0" (click)="placeBid()" [disabled]="!valid">Place Bid</button>
             </div>
           </div>
+          <span *ngIf="!valid" class="float-right warning">Bid value must be greater or equal than {{minBidValue}}</span>
         </div>
-        <div class="col-6" *ngIf="auction.endTimestamp === 'Auction ended'">
+        <div class="col-6" *ngIf="timeLeft === -1">
             <button class="btn btn-success rounded-0 float-right" (click)="claim()">Claim</button>
         </div>
       </div>

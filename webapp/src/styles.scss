@@ -191,3 +191,16 @@ body {
 ::ng-deep .cdk-overlay-container mat-datepicker-content{
   z-index:2000;
 }
+
+.ngx-pagination .current {
+  background: #c77700 !important;
+}
+
+.ngx-pagination{
+  padding-left: 0 !important;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+}

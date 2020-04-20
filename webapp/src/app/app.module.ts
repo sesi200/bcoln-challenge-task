@@ -26,6 +26,7 @@ import {MatDatetimepickerModule} from '@mat-datetimepicker/core';
 import {MatMomentDatetimeModule} from '@mat-datetimepicker/moment';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
+import {TimeleftPipe} from './pipes/timeleft.pipe';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     ItemDisplayerComponent,
     SafePipe,
     EtherPipe,
+    TimeleftPipe,
     NewAuctionComponent
   ],
   imports: [
@@ -59,7 +61,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     NgxPaginationModule
     // NgxPageScrollModule
   ],
-  providers: [MetaMaskService, EtherPipe],
+  providers: [MetaMaskService, EtherPipe, TimeleftPipe],
   entryComponents: [NewAuctionComponent],
   bootstrap: [AppComponent]
 })

@@ -12,7 +12,7 @@ export class MyBiddingComponent implements OnInit {
   public networkName: string;
 
   openAuctions$: Observable<Auction[]>;
-
+  p = 1;
   constructor(private auctionService: AuctionService) {
   }
 

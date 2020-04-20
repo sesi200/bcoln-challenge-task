@@ -4,12 +4,26 @@
   </div>
 </div>
 
-<div class="min-height">
-  <mat-spinner class="mx-auto" *ngIf="(openAuctions$ | async)"></mat-spinner>
-
-  <ng-container *ngFor="let auction of openAuctions$|async | paginate: { itemsPerPage: 5, currentPage: p }">
-    <app-item-displayer [auction]="auction"></app-item-displayer>
+<div class="min-height" *ngIf="openAuctions$ | async as auctions; else loading">
+  <ng-container *ngIf="auctions.length; else noItems">
+    <ng-container *ngFor="let auction of auctions | paginate: { itemsPerPage: 5, currentPage: p }">
+      <app-item-displayer [auction]="auction"></app-item-displayer>
+    </ng-container>
+    <div class="pagination">
+      <pagination-controls (pageChange)="p = $event" class="mx-auto"></pagination-controls>
+    </div>
   </ng-container>
-
-  <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  <ng-template #noItems>
+    <div class="min-height">
+      <p>No items to display</p>
+    </div>
+  </ng-template>
 </div>
+
+<ng-template #loading>
+  <div class="min-height">
+    <mat-spinner class="mx-auto" ></mat-spinner>
+  </div>
+</ng-template>
+
+

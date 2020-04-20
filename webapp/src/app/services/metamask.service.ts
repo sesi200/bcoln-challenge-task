@@ -533,14 +533,19 @@ export class MetaMaskService {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.min_bid_step().call());
   }
 
+  public getCurrentMaxBidder(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_max_bidder().call());
+  }
+
   public bidForAuction(auctionAddress: string, value: number) {
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
       new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
   }
 
-  public closeAuction(auctionAddress: string) {
-    console.log(auctionAddress);
-    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.close_auction().call());
-    // return from(this.auctionHouseContract.methods.close_auction(auctionIndex).call());
+  public closeAuction(auctionIndex: number) {
+    return this.getCurrentAccount().pipe(
+      switchMap(currentAccount =>
+        this.auctionHouseContract.methods.close_auction(auctionIndex)
+          .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 }

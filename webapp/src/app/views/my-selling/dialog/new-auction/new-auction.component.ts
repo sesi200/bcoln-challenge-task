@@ -1,15 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import * as moment from 'moment';
-import {Moment, now} from 'moment';
+// import * as moment from 'moment';
+// import {Moment, now} from 'moment';
 import {Auction} from '../../../../model/model';
 import {AuctionService} from '../../../../services/auction.service';
+import * as _moment from 'moment';
+// @ts-ignore
+import {default as _rollupMoment, Moment} from 'moment';
+const moment = _rollupMoment || _moment;
 
 export function ValidateDate(control: AbstractControl) {
   const momentDate: Moment = control.value;
   if (momentDate) {
-    if (momentDate.isBefore(now())) {
+    if (momentDate.isBefore(moment.now())) {
       return {invalidDate: true};
     }
   }

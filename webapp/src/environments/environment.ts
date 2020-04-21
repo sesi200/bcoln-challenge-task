@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  mainAuctionHouseAddress: '',
-  ropstenAuctionHouseAddress: '',
-  privateAuctionHouseAddress: '0x46a0ac44f16967DE712AC4eB8C23325d193be6bF'
+  mainAuctionHouseAddress: '0x0000000000000000000000000000000000000000',
+  ropstenAuctionHouseAddress: '0x0000000000000000000000000000000000000000',
+  privateAuctionHouseAddress: '0x0000000000000000000000000000000000000000'
 };
 
 /*

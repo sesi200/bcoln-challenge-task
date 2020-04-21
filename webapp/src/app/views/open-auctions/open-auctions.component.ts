@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {AuctionService, METHODS} from '../../services/auction.service';
 import {Auction} from '../../model/model';
 import {Observable} from 'rxjs';
+import {MetaMaskService} from '../../services/metamask.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-open-auctions',
@@ -11,18 +13,27 @@ import {Observable} from 'rxjs';
 export class OpenAuctionsComponent implements OnInit {
 
   openAuctions$: Observable<Auction[]>;
-  // openAuctions: Auction[];
   p = 1;
-  loading = false;
-  constructor(private auctionService: AuctionService) { }
+  constructor(private auctionService: AuctionService, private metaMaskService: MetaMaskService, private toastrService: ToastrService) { }
 
   ngOnInit(): void {
     this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);
-    // this.loading = true;
-    // this.auctionService.getMethod(METHODS.OpenAuctions).subscribe(value => {
-    //   this.openAuctions = value;
-    //   this.loading = false;
-    // });
+    this.metaMaskService.newEvent.subscribe(value => {
+      console.log(value);
+      switch (value) {
+        case 1:
+          this.toastrService.success('There was a new bid');
+          break;
+        case 2:
+          this.toastrService.success('Someone claimed an item');
+          break;
+        case -1:
+          this.toastrService.error('Something went wrong');
+          break;
+
+      }
+      this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);
+    });
   }
 
 }

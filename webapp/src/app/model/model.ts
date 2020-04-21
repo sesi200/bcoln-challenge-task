@@ -10,4 +10,5 @@ export class Auction {
   minBidStep: number;
   imgUrl: string;
   iAmMaxBidder = false;
+  iAmSeller = false;
 }

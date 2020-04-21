@@ -2,7 +2,9 @@ pragma solidity ^0.6.1;
 
 abstract contract Auction {
     address payable public seller;
+    mapping (address => uint256) public all_bidders;
     string public description;
+    string public img_url;
     uint public end_timestamp;
     address payable public current_max_bidder;
     uint public current_max_bid = 0;
@@ -40,8 +42,9 @@ abstract contract Auction {
 
 contract FirstPriceAuction is Auction {
 
-   constructor(address payable _seller, string memory auction_description, uint auction_end_timestamp, uint minimum_bid, uint minimum_bid_step) public {
+   constructor(address payable _seller, string memory auction_description, string memory img, uint auction_end_timestamp, uint minimum_bid, uint minimum_bid_step) public {
        seller = _seller;
+       img_url = img;
        description = auction_description;
        end_timestamp = auction_end_timestamp;
        min_bid = minimum_bid;
@@ -52,6 +55,8 @@ contract FirstPriceAuction is Auction {
        require(msg.sender != seller);
        //revert previous max bid
        current_max_bidder.transfer(current_max_bid);
+       //note bidder
+       all_bidders[bidder] = msg.value;
        //register new max bid
        current_max_bid = msg.value;
        current_max_bidder = bidder;
@@ -69,7 +74,7 @@ contract FirstPriceAuction is Auction {
    }
 
    function is_bidder(address payable check) override external view returns(bool){
-       return current_max_bidder==check;
+       return all_bidders[check] > 0;
    }
 }
 
@@ -78,9 +83,10 @@ contract SecondPriceAuction is Auction {
     uint public current_second_bid = 0;
     address payable public current_second_bidder;
 
-   constructor(address payable _seller, string memory auction_description, uint auction_end_timestamp, uint minimum_bid, uint minimum_bid_step) public {
+   constructor(address payable _seller, string memory auction_description, string memory img, uint auction_end_timestamp, uint minimum_bid, uint minimum_bid_step) public {
        seller = _seller;
        description = auction_description;
+       img_url = img;
        end_timestamp = auction_end_timestamp;
        min_bid = minimum_bid;
        min_bid_step = minimum_bid_step;
@@ -102,6 +108,8 @@ contract SecondPriceAuction is Auction {
             current_second_bid = msg.value;
             current_second_bidder = bidder;
        }
+       //note bidder
+       all_bidders[bidder] = msg.value;
    }
 
    function close_auction() override external auction_ended closes_auction{
@@ -132,7 +140,7 @@ contract SecondPriceAuction is Auction {
    }
 
    function is_bidder(address payable check) override external view returns(bool) {
-       return current_max_bidder==check || current_second_bidder==check;
+       return all_bidders[check] > 0;
    }
 }
 
@@ -142,14 +150,14 @@ contract AuctionHouse {
     event NewBid(uint auction_index, uint bid_amount);
     event AuctionClosed(uint auction_index, uint max_bid, address seller, address buyer);
 
-    function create_first_price_auction(string calldata description, uint auction_end_timestamp, uint minimum_bid_wei, uint minimum_bid_step_wei) external returns(uint256){
-        Auction newAuction = new FirstPriceAuction(msg.sender, description, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
+    function create_first_price_auction(string calldata description, string calldata img_url, uint auction_end_timestamp, uint minimum_bid_wei, uint minimum_bid_step_wei) external returns(uint256){
+        Auction newAuction = new FirstPriceAuction(msg.sender, description, img_url, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
         auctions.push(newAuction);
         return auctions.length - 1;
     }
 
-    function create_second_price_auction(string calldata description, uint auction_end_timestamp, uint minimum_bid_wei, uint minimum_bid_step_wei) external returns(uint256){
-        Auction newAuction = new SecondPriceAuction(msg.sender, description, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
+    function create_second_price_auction(string calldata description, string calldata img_url, uint auction_end_timestamp, uint minimum_bid_wei, uint minimum_bid_step_wei) external returns(uint256){
+        Auction newAuction = new SecondPriceAuction(msg.sender, description, img_url, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
         auctions.push(newAuction);
         return auctions.length - 1;
     }

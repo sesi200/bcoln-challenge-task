@@ -39,25 +39,12 @@ export class MySellingComponent implements OnInit {
           break;
 
       }
-      this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);
+      this.openAuctions$ = this.auctionService.getMethod(METHODS.Sellings);
     });
   }
 
   newAuction() {
     const modalRef = this.modalService.open(NewAuctionComponent, {windowClass: 'dbay-modal', size: 'lg'});
-
-    // // if (org) {
-    // //   modalRef.componentInstance.organisation = org;
-    // // }
-    // // modalRef.componentInstance.organisationValidator = this.orgValidator;
-    modalRef.result.then((resolveOutput) => {
-
-      const int = setInterval(() => {
-        this.openAuctions$ = this.auctionService.getMethod(METHODS.Sellings);
-        clearInterval(int);
-      }, 3000);
-    }, (rejectOutput) => {
-    });
   }
 
 }

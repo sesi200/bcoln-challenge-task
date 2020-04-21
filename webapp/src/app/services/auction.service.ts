@@ -53,10 +53,11 @@ export class AuctionService {
                     this.metaMaskService.getAuctionTimestampFromAddress(address),
                     this.metaMaskService.getCurrentMaxBidder(address),
                     this.metaMaskService.getCurrentAccount(),
-                    this.metaMaskService.getAuctionSeller(address)
+                    this.metaMaskService.getAuctionSeller(address),
+                  this.metaMaskService.getImageUrl(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -67,7 +68,7 @@ export class AuctionService {
                     iAmMaxBidder: currentMaxBidder === currentAccount,
                     seller,
                     iAmSeller: currentAccount === seller,
-                    imgUrl: 'images/placeholder.jpg'
+                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg'
                   } as Auction))
                 );
               }
@@ -116,10 +117,11 @@ export class AuctionService {
                     this.metaMaskService.getAuctionTimestampFromAddress(address),
                     this.metaMaskService.getCurrentMaxBidder(address),
                     this.metaMaskService.getCurrentAccount(),
-                    this.metaMaskService.getAuctionSeller(address)
+                    this.metaMaskService.getAuctionSeller(address),
+                  this.metaMaskService.getImageUrl(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -130,7 +132,7 @@ export class AuctionService {
                     iAmMaxBidder: currentMaxBidder === currentAccount,
                     seller,
                     iAmSeller: currentAccount === seller,
-                    imgUrl: 'images/placeholder.jpg'
+                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg'
                   } as Auction))
                 );
               }
@@ -179,10 +181,11 @@ export class AuctionService {
                     this.metaMaskService.getAuctionTimestampFromAddress(address),
                     this.metaMaskService.getCurrentMaxBidder(address),
                     this.metaMaskService.getCurrentAccount(),
-                    this.metaMaskService.getAuctionSeller(address)
+                    this.metaMaskService.getAuctionSeller(address),
+                    this.metaMaskService.getImageUrl(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -193,7 +196,7 @@ export class AuctionService {
                     iAmMaxBidder: currentMaxBidder === currentAccount,
                     seller,
                     iAmSeller: currentAccount === seller,
-                    imgUrl: 'images/placeholder.jpg'
+                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg'
                   } as Auction))
                 );
               }
@@ -248,10 +251,13 @@ export class AuctionService {
     console.log(auction);
     this.metaMaskService.createFirstPriceAuction(
       auction.description,
+      auction.imgUrl,
       Number(auction.endTimestamp),
       this.convertEthToWei(auction.minBid),
       this.convertEthToWei(auction.minBidStep)
-    ).pipe(first()).subscribe();
+    ).pipe(first()).subscribe(value => {
+       window.location.reload();
+    });
     // TODO: Should return whether a bid was successful or not..
   }
 

@@ -3,6 +3,7 @@ import {Auction} from '../../model/model';
 import {AuctionService} from '../../services/auction.service';
 import {EtherPipe} from '../../pipes/ether.pipe';
 import {FormControl, Validators} from '@angular/forms';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-item-displayer',
@@ -18,15 +19,17 @@ export class ItemDisplayerComponent implements OnInit {
   timeLeft: number;
   bid: number;
   valid = true;
+  image;
 
-  constructor(private auctionSerice: AuctionService, private converter: EtherPipe) {
+  constructor(private auctionSerice: AuctionService, private converter: EtherPipe, private sanitizer: DomSanitizer) {
   }
 
   ngOnInit(): void {
     // TODO: based on step
     this.minBidStep = this.converter.transform(this.auction.minBidStep, 'weiToEth');
     this.minBidValue = this.converter.transform(this.auction.currentMaxBid, 'weiToEth') + this.minBidStep;
-    this.bid = this.minBidValue;
+    this.bid = Number(parseFloat(this.minBidValue.toString()).toPrecision(12));
+    this.image = this.sanitizer.bypassSecurityTrustStyle(`url(${this.auction.imgUrl})`);
     this.recalcTime();
     const int = setInterval(() => {
       this.recalcTime();

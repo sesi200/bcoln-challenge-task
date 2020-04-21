@@ -50,25 +50,6 @@ export class MetaMaskService {
       type: 'event'
     },
     {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          internalType: 'uint256',
-          name: 'auction_index',
-          type: 'uint256'
-        },
-        {
-          indexed: false,
-          internalType: 'uint256',
-          name: 'bid_amount',
-          type: 'uint256'
-        }
-      ],
-      name: 'NewBid',
-      type: 'event'
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
@@ -99,6 +80,11 @@ export class MetaMaskService {
         {
           internalType: 'string',
           name: 'description',
+          type: 'string'
+        },
+        {
+          internalType: 'string',
+          name: 'img_url',
           type: 'string'
         },
         {
@@ -136,6 +122,11 @@ export class MetaMaskService {
           type: 'string'
         },
         {
+          internalType: 'string',
+          name: 'img_url',
+          type: 'string'
+        },
+        {
           internalType: 'uint256',
           name: 'auction_end_timestamp',
           type: 'uint256'
@@ -161,6 +152,25 @@ export class MetaMaskService {
       ],
       stateMutability: 'nonpayable',
       type: 'function'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'bid_amount',
+          type: 'uint256'
+        }
+      ],
+      name: 'NewBid',
+      type: 'event'
     },
     {
       inputs: [],
@@ -270,6 +280,38 @@ export class MetaMaskService {
     {
       inputs: [
         {
+          internalType: 'address',
+          name: '',
+          type: 'address'
+        }
+      ],
+      name: 'all_bidders',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'auction_closed',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
           internalType: 'address payable',
           name: 'bidder',
           type: 'address'
@@ -285,19 +327,6 @@ export class MetaMaskService {
       name: 'close_auction',
       outputs: [],
       stateMutability: 'nonpayable',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'auction_closed',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool'
-        }
-      ],
-      stateMutability: 'view',
       type: 'function'
     },
     {
@@ -360,6 +389,19 @@ export class MetaMaskService {
           internalType: 'uint256',
           name: '',
           type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'img_url',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string'
         }
       ],
       stateMutability: 'view',
@@ -466,7 +508,7 @@ export class MetaMaskService {
     );
   }
 
-  public createFirstPriceAuction(description: string, endTimestamp: number, minBidWei: number, minStepWei: number) {
+  public createFirstPriceAuction(description: string, imgUrl: string, endTimestamp: number, minBidWei: number, minStepWei: number) {
 //     // Decimal
 //     const decimals = Web3.utils.toBN(18);
 //
@@ -478,7 +520,7 @@ export class MetaMaskService {
 
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount =>
-        this.auctionHouseContract.methods.create_first_price_auction(description, endTimestamp, minBid, minBidStep)
+        this.auctionHouseContract.methods.create_first_price_auction(description, imgUrl, endTimestamp, minBid, minBidStep)
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 
@@ -548,6 +590,10 @@ export class MetaMaskService {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.seller().call());
   }
 
+  public getImageUrl(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.img_url().call());
+  }
+
   public bidForAuction(auctionAddress: string, value: number) {
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
       new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
@@ -555,7 +601,7 @@ export class MetaMaskService {
 
   public bidForAuctionByIndex(auctionIndex: number, value: number) {
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
-       this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
+      this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
   }
 
   public closeAuction(auctionIndex: number) {

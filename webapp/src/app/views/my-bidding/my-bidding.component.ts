@@ -36,7 +36,7 @@ export class MyBiddingComponent implements OnInit {
           break;
 
       }
-      this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);
+      this.openAuctions$ = this.auctionService.getMethod(METHODS.Biddings);
     });
   }
 }

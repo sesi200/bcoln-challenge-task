@@ -4,6 +4,7 @@ import Web3 from 'web3';
 import {environment} from '../../environments/environment';
 import {from, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+import BigNumber from 'bignumber.js';
 
 
 @Injectable()
@@ -423,7 +424,7 @@ export class MetaMaskService {
 
   public auctionHouseContract: any;
 
-  static getTransactionObject(FROM: string, GAS: number, VALUE: number) {
+  static getTransactionObject(FROM: string, GAS: number, VALUE: number | string) {
     return {
       from: FROM,
       gas: GAS,
@@ -467,10 +468,13 @@ export class MetaMaskService {
 //     const decimals = Web3.utils.toBN(18);
 //
 // // Amount of token
-//     const tokenAmount = Web3.utils.toBN(10000000000);
 //     const tokenAmountHex = '0x' + minBidWei.mul(Web3.utils.toBN(10).pow(decimals)).toString('hex');
-    const minBid = Web3.utils.toWei(Web3.utils.toBN(minBidWei), 'wei');
-    const minBidStep = Web3.utils.toWei(Web3.utils.toBN(minStepWei), 'wei');
+//     const tokenAmount = Web3.utils.toBN(10000000000);
+    const BNminBid = new BigNumber(minBidWei);
+    const BNminStep = new BigNumber(minStepWei);
+    const minBid = Web3.utils.toWei(Web3.utils.toBN(BNminBid.toFixed()), 'wei');
+    const minBidStep = Web3.utils.toWei(Web3.utils.toBN(BNminStep.toFixed()), 'wei');
+
 
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount =>
@@ -541,13 +545,15 @@ export class MetaMaskService {
   }
 
   public bidForAuction(auctionAddress: string, value: number) {
+    const BNvalue = new BigNumber(value);
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
-      new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
+      new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, BNvalue.toFixed()))));
   }
 
   public bidForAuctionByIndex(auctionIndex: number, value: number) {
+    const BNvalue = new BigNumber(value);
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
-       this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
+       this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, BNvalue.toFixed()))));
   }
 
   public closeAuction(auctionIndex: number) {

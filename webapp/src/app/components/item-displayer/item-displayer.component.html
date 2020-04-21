@@ -10,7 +10,7 @@
       </div>
       <div class="row">
         <div class="col-6"><span class="item-price"><fa-icon  [icon]="['fab','ethereum']" class="pointer" ngbTooltip="Price"></fa-icon> {{auction.currentMaxBid | etherConverter | number: '1.2-5'}}</span></div>
-        <div class="col-6" *ngIf="timeLeft !== -1">
+        <div class="col-6" *ngIf="timeLeft !== -1 && !auction.iAmSeller">
           <span *ngIf="auction.iAmMaxBidder" class="float-right winning">You have the highest bid</span>
           <div class="input-group">
             <div class="input-group-prepend">
@@ -23,8 +23,14 @@
           </div>
           <span *ngIf="!valid" class="float-right warning">Bid value must be greater or equal than {{minBidValue}}</span>
         </div>
+        <div class="col-6" *ngIf="timeLeft !== -1 && auction.iAmSeller">
+          <span class="float-right winning">Your item</span>
+        </div>
         <div class="col-6" *ngIf="timeLeft === -1">
-            <button class="btn btn-success rounded-0 float-right" (click)="claim()">Claim</button>
+          <div class="row">
+            <div class="col-12"><span class="float-right winning" *ngIf="auction.iAmSeller">Your item</span></div>
+            <div class="col-12"><button class="btn btn-success rounded-0 float-right" (click)="claim()">Claim</button></div>
+          </div>
         </div>
       </div>
     </div>

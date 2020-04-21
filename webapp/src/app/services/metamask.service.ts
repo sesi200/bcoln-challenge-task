@@ -2,12 +2,16 @@ import {Inject, Injectable} from '@angular/core';
 import {WEB3} from '../WEB3';
 import Web3 from 'web3';
 import {environment} from '../../environments/environment';
-import {from, Observable, of} from 'rxjs';
+import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 
 
 @Injectable()
 export class MetaMaskService {
+
+  newEventSubject = new BehaviorSubject<number>(0);
+  newEvent = this.newEventSubject.asObservable();
+
 
   constructor(@Inject(WEB3) private web3: Web3) {
   }
@@ -540,6 +544,10 @@ export class MetaMaskService {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_max_bidder().call());
   }
 
+  public getAuctionSeller(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.seller().call());
+  }
+
   public bidForAuction(auctionAddress: string, value: number) {
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
       new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, value))));
@@ -558,10 +566,26 @@ export class MetaMaskService {
   }
 
   public newBidEvent() {
-    this.auctionHouseContract.events.NewBid().on('data', (event) => console.log(event.returnValues)).on('error', (event) => console.error(event));
+    this.auctionHouseContract.events.NewBid().on('data', (event) => {
+      // console.log(event.returnValues);
+      this.newEventSubject.next(1);
+      this.newEventSubject.next(0);
+    }).on('error', (event) => {
+      // console.error(event);
+      this.newEventSubject.next(-1);
+      this.newEventSubject.next(0);
+    });
   }
 
   public auctionClosedEvent() {
-    this.auctionHouseContract.events.AuctionClosed().on('data', (event) => console.log(event.returnValues)).on('error', (event) => console.error(event));
+    this.auctionHouseContract.events.AuctionClosed().on('data', (event) => {
+      // console.log(event.returnValues);
+      this.newEventSubject.next(2);
+      this.newEventSubject.next(0);
+    }).on('error', (event) => {
+      // console.error(event);
+      this.newEventSubject.next(-1);
+      this.newEventSubject.next(0);
+    });
   }
 }

@@ -52,10 +52,11 @@ export class AuctionService {
                     this.metaMaskService.getAuctionMinBidStepFromAddress(address),
                     this.metaMaskService.getAuctionTimestampFromAddress(address),
                     this.metaMaskService.getCurrentMaxBidder(address),
-                    this.metaMaskService.getCurrentAccount()
+                    this.metaMaskService.getCurrentAccount(),
+                    this.metaMaskService.getAuctionSeller(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -64,6 +65,8 @@ export class AuctionService {
                     endTimestamp: this.getTimeLeft(endTimestamp.toString()),
                     currentMaxBidder,
                     iAmMaxBidder: currentMaxBidder === currentAccount,
+                    seller,
+                    iAmSeller: currentAccount === seller,
                     imgUrl: 'images/placeholder.jpg'
                   } as Auction))
                 );
@@ -77,7 +80,6 @@ export class AuctionService {
 
       }),
       switchMap(auctionDetails => {
-        console.log(auctionDetails);
         // @ts-ignore
         if (auctionDetails.length !== 0) {
           // @ts-ignore
@@ -113,10 +115,11 @@ export class AuctionService {
                     this.metaMaskService.getAuctionMinBidStepFromAddress(address),
                     this.metaMaskService.getAuctionTimestampFromAddress(address),
                     this.metaMaskService.getCurrentMaxBidder(address),
-                    this.metaMaskService.getCurrentAccount()
+                    this.metaMaskService.getCurrentAccount(),
+                    this.metaMaskService.getAuctionSeller(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -125,6 +128,8 @@ export class AuctionService {
                     endTimestamp: this.getTimeLeft(endTimestamp.toString()),
                     currentMaxBidder,
                     iAmMaxBidder: currentMaxBidder === currentAccount,
+                    seller,
+                    iAmSeller: currentAccount === seller,
                     imgUrl: 'images/placeholder.jpg'
                   } as Auction))
                 );
@@ -138,7 +143,6 @@ export class AuctionService {
 
       }),
       switchMap(auctionDetails => {
-        console.log(auctionDetails);
         // @ts-ignore
         if (auctionDetails.length !== 0) {
           // @ts-ignore
@@ -174,10 +178,11 @@ export class AuctionService {
                     this.metaMaskService.getAuctionMinBidStepFromAddress(address),
                     this.metaMaskService.getAuctionTimestampFromAddress(address),
                     this.metaMaskService.getCurrentMaxBidder(address),
-                    this.metaMaskService.getCurrentAccount()
+                    this.metaMaskService.getCurrentAccount(),
+                    this.metaMaskService.getAuctionSeller(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -186,6 +191,8 @@ export class AuctionService {
                     endTimestamp: this.getTimeLeft(endTimestamp.toString()),
                     currentMaxBidder,
                     iAmMaxBidder: currentMaxBidder === currentAccount,
+                    seller,
+                    iAmSeller: currentAccount === seller,
                     imgUrl: 'images/placeholder.jpg'
                   } as Auction))
                 );
@@ -199,7 +206,6 @@ export class AuctionService {
 
       }),
       switchMap(auctionDetails => {
-        console.log(auctionDetails);
         // @ts-ignore
         if (auctionDetails.length !== 0) {
           // @ts-ignore
@@ -233,7 +239,7 @@ export class AuctionService {
 
   closeAuction(auctionIndex: number): void {
     this.metaMaskService.closeAuction(auctionIndex).subscribe(value => {
-      window.location.reload();
+      // window.location.reload();
     });
   }
 
@@ -250,7 +256,6 @@ export class AuctionService {
   }
 
   getAuctionIndexOfAddress(address: string): Observable<number> {
-    console.log('hereds');
     return this.metaMaskService.getAuctions().pipe(
       map((addresses: string[]) => {
         return addresses.indexOf(address);

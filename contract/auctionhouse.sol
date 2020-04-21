@@ -11,12 +11,15 @@ abstract contract Auction {
     uint public min_bid;
     uint public min_bid_step;
     function bid(address payable bidder) virtual external payable;
+    function mark_as_item_received() virtual external;
     function close_auction() virtual external;
     function current_sale_price() virtual public view returns(uint);
     function is_bidder(address payable check) virtual external view returns(bool);
+    bool public winner_received_item = false;
     bool public auction_closed = false;
 
     modifier closes_auction() virtual {
+        require(winner_received_item);
         require(!auction_closed);
         _;
         auction_closed = true;
@@ -52,7 +55,7 @@ contract FirstPriceAuction is Auction {
    }
 
    function bid(address payable bidder) override external payable valid_bid auction_running {
-       require(msg.sender != seller);
+       require(tx.origin != seller);
        //revert previous max bid
        current_max_bidder.transfer(current_max_bid);
        //note bidder
@@ -60,6 +63,12 @@ contract FirstPriceAuction is Auction {
        //register new max bid
        current_max_bid = msg.value;
        current_max_bidder = bidder;
+   }
+   
+   //the auction winner marks the item as received, thereby unlocking the funds for the seller
+   function mark_as_item_received() override external auction_ended {
+       require(tx.origin == current_max_bidder);
+       winner_received_item = true;
    }
 
    function close_auction() override external auction_ended closes_auction {
@@ -93,7 +102,7 @@ contract SecondPriceAuction is Auction {
    }
 
    function bid(address payable bidder) override external payable valid_bid auction_running {
-       require(msg.sender != seller);
+       require(tx.origin != seller);
        //revert previous second bid
        current_second_bidder.transfer(current_second_bid);
        //register new bid
@@ -110,6 +119,12 @@ contract SecondPriceAuction is Auction {
        }
        //note bidder
        all_bidders[bidder] = msg.value;
+   }
+   
+   //the auction winner marks the item as received, thereby unlocking the funds for the seller
+   function mark_as_item_received() override external auction_ended {
+       require(tx.origin == current_max_bidder);
+       winner_received_item = true;
    }
 
    function close_auction() override external auction_ended closes_auction{
@@ -151,13 +166,13 @@ contract AuctionHouse {
     event AuctionClosed(uint auction_index, uint max_bid, address seller, address buyer);
 
     function create_first_price_auction(string calldata description, string calldata img_url, uint auction_end_timestamp, uint minimum_bid_wei, uint minimum_bid_step_wei) external returns(uint256){
-        Auction newAuction = new FirstPriceAuction(msg.sender, description, img_url, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
+        Auction newAuction = new FirstPriceAuction(tx.origin, description, img_url, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
         auctions.push(newAuction);
         return auctions.length - 1;
     }
 
     function create_second_price_auction(string calldata description, string calldata img_url, uint auction_end_timestamp, uint minimum_bid_wei, uint minimum_bid_step_wei) external returns(uint256){
-        Auction newAuction = new SecondPriceAuction(msg.sender, description, img_url, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
+        Auction newAuction = new SecondPriceAuction(tx.origin, description, img_url, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
         auctions.push(newAuction);
         return auctions.length - 1;
     }
@@ -169,6 +184,10 @@ contract AuctionHouse {
     function bid(uint auction_index) external payable {
         auctions[auction_index].bid.value(msg.value)(msg.sender);
         emit NewBid(auction_index, msg.value);
+    }
+    
+    function mark_as_item_received(uint auction_index) external {
+        auctions[auction_index].mark_as_item_received();
     }
 
     function close_auction(uint auction_index) external {

@@ -206,7 +206,9 @@ contract AuctionHouse {
         Auction[] memory oversized = new Auction[](auctions.length);
         uint count = 0;
         for(uint i = 0; i < auctions.length; i++) {
-            if(!auctions[i].auction_closed()) {
+            //ignore if closed and if auction ended without bids
+            if(!auctions[i].auction_closed() &&
+                !(now > auctions[i].end_timestamp() && auctions[i].current_max_bid() == 0)) {
                 oversized[count] = auctions[i];
                 count++;
             }

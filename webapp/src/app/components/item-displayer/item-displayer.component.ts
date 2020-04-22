@@ -20,6 +20,7 @@ export class ItemDisplayerComponent implements OnInit {
   bid: number;
   valid = true;
   image;
+  emptyBidder = '0x0000000000000000000000000000000000000000';
 
   constructor(private auctionSerice: AuctionService, private converter: EtherPipe, private sanitizer: DomSanitizer) {
   }

@@ -11,4 +11,6 @@ export class Auction {
   imgUrl: string;
   iAmMaxBidder = false;
   iAmSeller = false;
+  winnerReceivedItem = false;
+  auctionClosed = false;
 }

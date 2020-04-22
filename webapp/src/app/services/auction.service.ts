@@ -54,10 +54,12 @@ export class AuctionService {
                     this.metaMaskService.getCurrentMaxBidder(address),
                     this.metaMaskService.getCurrentAccount(),
                     this.metaMaskService.getAuctionSeller(address),
-                  this.metaMaskService.getImageUrl(address)
+                    this.metaMaskService.getImageUrl(address),
+                    this.metaMaskService.getWinnerReceivedItem(address),
+                    this.metaMaskService.getAuctionClosed(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl, winnerReceivedItem, auctionClosed]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -68,7 +70,9 @@ export class AuctionService {
                     iAmMaxBidder: currentMaxBidder === currentAccount,
                     seller,
                     iAmSeller: currentAccount === seller,
-                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg'
+                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg',
+                    winnerReceivedItem,
+                    auctionClosed
                   } as Auction))
                 );
               }
@@ -90,16 +94,20 @@ export class AuctionService {
           return of(auctions);
         }
       }),
-      tap(results => {
-        return results.sort((b: Auction, a: Auction) => {
-          // if (ids === null) {
-          // tslint:disable-next-line:max-line-length
+      map((results: Auction[]) => {
+        // console.log(results);
+        results = results.filter((auction: Auction) =>  (auction.endTimestamp !== '-1' || (auction.endTimestamp === '-1' && (auction.iAmMaxBidder || auction.iAmSeller))));
+        results.sort((b: Auction, a: Auction) => {
           return a.endTimestamp > b.endTimestamp ? -1 : a.endTimestamp < b.endTimestamp ? 1 : 0;
-          // } else {
-          //   return ids.indexOf(a.publicationId) - ids.indexOf(b.publicationId);
-          // }
         });
+        // console.log(results);
+        return results;
       })
+      // tap(results => {
+      //   return results.sort((b: Auction, a: Auction) => {
+      //     return a.endTimestamp > b.endTimestamp ? -1 : a.endTimestamp < b.endTimestamp ? 1 : 0;
+      //   });
+      // })
     );
   }
 
@@ -118,10 +126,12 @@ export class AuctionService {
                     this.metaMaskService.getCurrentMaxBidder(address),
                     this.metaMaskService.getCurrentAccount(),
                     this.metaMaskService.getAuctionSeller(address),
-                  this.metaMaskService.getImageUrl(address)
+                    this.metaMaskService.getImageUrl(address),
+                    this.metaMaskService.getWinnerReceivedItem(address),
+                    this.metaMaskService.getAuctionClosed(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl, winnerReceivedItem, auctionClosed]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -132,7 +142,9 @@ export class AuctionService {
                     iAmMaxBidder: currentMaxBidder === currentAccount,
                     seller,
                     iAmSeller: currentAccount === seller,
-                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg'
+                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg',
+                    winnerReceivedItem,
+                    auctionClosed
                   } as Auction))
                 );
               }
@@ -156,12 +168,7 @@ export class AuctionService {
       }),
       tap(results => {
         return results.sort((b: Auction, a: Auction) => {
-          // if (ids === null) {
-          // tslint:disable-next-line:max-line-length
           return a.endTimestamp > b.endTimestamp ? -1 : a.endTimestamp < b.endTimestamp ? 1 : 0;
-          // } else {
-          //   return ids.indexOf(a.publicationId) - ids.indexOf(b.publicationId);
-          // }
         });
       })
     );
@@ -182,10 +189,12 @@ export class AuctionService {
                     this.metaMaskService.getCurrentMaxBidder(address),
                     this.metaMaskService.getCurrentAccount(),
                     this.metaMaskService.getAuctionSeller(address),
-                    this.metaMaskService.getImageUrl(address)
+                    this.metaMaskService.getImageUrl(address),
+                    this.metaMaskService.getWinnerReceivedItem(address),
+                    this.metaMaskService.getAuctionClosed(address)
                   ]
                 ).pipe(
-                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl]) => ({
+                  map(([auctionIndex, description, currentMaxBid, minBidStep, endTimestamp, currentMaxBidder, currentAccount, seller, imageUrl, winnerReceivedItem, auctionClosed]) => ({
                     address,
                     auctionIndex,
                     description,
@@ -196,7 +205,9 @@ export class AuctionService {
                     iAmMaxBidder: currentMaxBidder === currentAccount,
                     seller,
                     iAmSeller: currentAccount === seller,
-                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg'
+                    imgUrl: imageUrl ? imageUrl : 'assets/images/placeholder.jpg',
+                    winnerReceivedItem,
+                    auctionClosed
                   } as Auction))
                 );
               }
@@ -220,21 +231,16 @@ export class AuctionService {
       }),
       tap(results => {
         return results.sort((b: Auction, a: Auction) => {
-          // if (ids === null) {
-          // tslint:disable-next-line:max-line-length
           return a.endTimestamp > b.endTimestamp ? -1 : a.endTimestamp < b.endTimestamp ? 1 : 0;
-          // } else {
-          //   return ids.indexOf(a.publicationId) - ids.indexOf(b.publicationId);
-          // }
         });
       })
     );
   }
 
   placeBid(ether: number, auctionIndex: number): void {
-    console.log(ether);
+    // console.log(ether);
     this.metaMaskService.bidForAuctionByIndex(auctionIndex, this.convertEthToWei(ether)).pipe(first()).subscribe(value => {
-      //window.location.reload();
+      // window.location.reload();
     });
 
     // TODO: Should return whether a bid was successful or not..
@@ -246,9 +252,13 @@ export class AuctionService {
     });
   }
 
+  confirmReception(auctionIndex: number): void {
+    this.metaMaskService.confirmReception(auctionIndex).subscribe(value => {
+      // window.location.reload();
+    });
+  }
+
   newAuction(auction: Auction): void {
-    console.log('new auction:');
-    console.log(auction);
     this.metaMaskService.createFirstPriceAuction(
       auction.description,
       auction.imgUrl,
@@ -256,7 +266,7 @@ export class AuctionService {
       this.convertEthToWei(auction.minBid),
       this.convertEthToWei(auction.minBidStep)
     ).pipe(first()).subscribe(value => {
-       window.location.reload();
+      window.location.reload();
     });
     // TODO: Should return whether a bid was successful or not..
   }
@@ -284,7 +294,7 @@ export class AuctionService {
     const currentTimestamp = Math.floor(new Date().getTime() / 1000);
 
     if (Number(endTimestamp) < currentTimestamp) {
-      return -1;
+      return '-1';
     }
     return endTimestamp;
 

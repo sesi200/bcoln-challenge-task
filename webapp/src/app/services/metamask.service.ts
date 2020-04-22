@@ -5,6 +5,7 @@ import {environment} from '../../environments/environment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
+import {ToastrService} from 'ngx-toastr';
 
 
 @Injectable()
@@ -14,7 +15,7 @@ export class MetaMaskService {
   newEvent = this.newEventSubject.asObservable();
 
 
-  constructor(@Inject(WEB3) private web3: Web3) {
+  constructor(@Inject(WEB3) private web3: Web3, private toastr: ToastrService) {
   }
 
 
@@ -49,6 +50,121 @@ export class MetaMaskService {
       ],
       name: 'AuctionClosed',
       type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'bid_amount',
+          type: 'uint256'
+        }
+      ],
+      name: 'NewBid',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'ObjectReceived',
+      type: 'event'
+    },
+    {
+      inputs: [],
+      name: 'all_auctions',
+      outputs: [
+        {
+          internalType: 'contract Auction[]',
+          name: '',
+          type: 'address[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address payable',
+          name: 'bidder',
+          type: 'address'
+        }
+      ],
+      name: 'all_auctions_for_bidder',
+      outputs: [
+        {
+          internalType: 'contract Auction[]',
+          name: '',
+          type: 'address[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address payable',
+          name: 'seller',
+          type: 'address'
+        }
+      ],
+      name: 'all_auctions_for_seller',
+      outputs: [
+        {
+          internalType: 'contract Auction[]',
+          name: '',
+          type: 'address[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'all_open_auctions',
+      outputs: [
+        {
+          internalType: 'contract Auction[]',
+          name: '',
+          type: 'address[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'auctions',
+      outputs: [
+        {
+          internalType: 'contract Auction',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
     },
     {
       inputs: [
@@ -155,108 +271,6 @@ export class MetaMaskService {
       type: 'function'
     },
     {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          internalType: 'uint256',
-          name: 'auction_index',
-          type: 'uint256'
-        },
-        {
-          indexed: false,
-          internalType: 'uint256',
-          name: 'bid_amount',
-          type: 'uint256'
-        }
-      ],
-      name: 'NewBid',
-      type: 'event'
-    },
-    {
-      inputs: [],
-      name: 'all_auctions',
-      outputs: [
-        {
-          internalType: 'contract Auction[]',
-          name: '',
-          type: 'address[]'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address payable',
-          name: 'bidder',
-          type: 'address'
-        }
-      ],
-      name: 'all_auctions_for_bidder',
-      outputs: [
-        {
-          internalType: 'contract Auction[]',
-          name: '',
-          type: 'address[]'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address payable',
-          name: 'seller',
-          type: 'address'
-        }
-      ],
-      name: 'all_auctions_for_seller',
-      outputs: [
-        {
-          internalType: 'contract Auction[]',
-          name: '',
-          type: 'address[]'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'all_open_auctions',
-      outputs: [
-        {
-          internalType: 'contract Auction[]',
-          name: '',
-          type: 'address[]'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      name: 'auctions',
-      outputs: [
-        {
-          internalType: 'contract Auction',
-          name: '',
-          type: 'address'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
@@ -273,6 +287,19 @@ export class MetaMaskService {
         }
       ],
       stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'mark_as_item_received',
+      outputs: [],
+      stateMutability: 'nonpayable',
       type: 'function'
     }
   ];
@@ -429,6 +456,13 @@ export class MetaMaskService {
     },
     {
       inputs: [],
+      name: 'mark_as_item_received',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [],
       name: 'min_bid',
       outputs: [
         {
@@ -465,6 +499,19 @@ export class MetaMaskService {
       ],
       stateMutability: 'view',
       type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'winner_received_item',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
     }
   ];
 
@@ -483,23 +530,31 @@ export class MetaMaskService {
       return of(undefined);
     }
     const privateAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.privateAuctionHouseAddress;
+    const ropstenAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.ropstenAuctionHouseAddress;
+    const mainNetAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.mainAuctionHouseAddress;
     return from(this.web3.eth.net.getNetworkType()).pipe(
       tap(currentNetwork => {
+        try {
           switch (currentNetwork) {
             case 'main':
-              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.mainAuctionHouseAddress);
+              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, mainNetAddress);
               break;
             case 'ropsten':
-              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, environment.ropstenAuctionHouseAddress);
+              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, ropstenAddress);
               break;
             case 'private':
               this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, privateAddress);
               break;
           }
+        } catch (e) {
+          this.toastr.error('The auctionhouse address provided is not valid', 'Not a valid address');
+        }
+
         }
       ),
       tap(() => this.newBidEvent()),
-      tap(() => this.auctionClosedEvent())
+      tap(() => this.auctionClosedEvent()),
+      tap(() => this.objectReceivedEvent())
     );
   }
 
@@ -598,6 +653,14 @@ export class MetaMaskService {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.img_url().call());
   }
 
+  public getWinnerReceivedItem(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.winner_received_item().call());
+  }
+
+  public getAuctionClosed(auctionAddress: string) {
+    return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.auction_closed().call());
+  }
+
   public bidForAuction(auctionAddress: string, value: number) {
     const BNvalue = new BigNumber(value);
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
@@ -617,6 +680,13 @@ export class MetaMaskService {
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 
+  public confirmReception(auctionIndex: number) {
+    return this.getCurrentAccount().pipe(
+      switchMap(currentAccount =>
+        this.auctionHouseContract.methods.mark_as_item_received(auctionIndex)
+          .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
+  }
+
   public newBidEvent() {
     this.auctionHouseContract.events.NewBid().on('data', (event) => {
       // console.log(event.returnValues);
@@ -633,6 +703,17 @@ export class MetaMaskService {
     this.auctionHouseContract.events.AuctionClosed().on('data', (event) => {
       // console.log(event.returnValues);
       this.newEventSubject.next(2);
+      this.newEventSubject.next(0);
+    }).on('error', (event) => {
+      // console.error(event);
+      this.newEventSubject.next(-1);
+      this.newEventSubject.next(0);
+    });
+  }
+  public objectReceivedEvent() {
+    this.auctionHouseContract.events.ObjectReceived().on('data', (event) => {
+      // console.log(event.returnValues);
+      this.newEventSubject.next(3);
       this.newEventSubject.next(0);
     }).on('error', (event) => {
       // console.error(event);

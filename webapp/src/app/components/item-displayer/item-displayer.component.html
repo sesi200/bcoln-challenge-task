@@ -30,7 +30,12 @@
         <div class="col-6" *ngIf="timeLeft === -1">
           <div class="row">
             <div class="col-12"><span class="float-right winning" *ngIf="auction.iAmSeller">Your item</span></div>
-            <div class="col-12"><button class="btn btn-success rounded-0 float-right" (click)="claim()">Claim</button></div>
+            <div class="col-12" *ngIf="auction.iAmSeller && auction.winnerReceivedItem && !auction.auctionClosed"><button class="btn btn-success rounded-0 float-right" (click)="claim()">Claim your money</button></div>
+            <div class="col-12" *ngIf="auction.iAmSeller && !auction.winnerReceivedItem && !auction.auctionClosed"><span class="float-right">Waiting for buyer to receive item <fa-icon icon="spinner" [spin]="true"></fa-icon></span></div>
+            <div class="col-12" *ngIf="auction.iAmMaxBidder && auction.winnerReceivedItem && !auction.auctionClosed"><span class="float-right">Waiting for seller to claim money <fa-icon icon="spinner" [spin]="true"></fa-icon></span></div>
+            <div class="col-12" *ngIf="auction.iAmMaxBidder && !auction.winnerReceivedItem && !auction.auctionClosed"><button class="btn btn-success rounded-0 float-right" (click)="confirmReception()">Confirm reception of item</button></div>
+            <div class="col-12" *ngIf="auction.iAmMaxBidder && auction.auctionClosed"><span class="float-right">You bought this item successfully</span></div>
+            <div class="col-12" *ngIf="auction.iAmSeller && auction.auctionClosed"><span class="float-right">You sold this item successfully</span></div>
           </div>
         </div>
       </div>

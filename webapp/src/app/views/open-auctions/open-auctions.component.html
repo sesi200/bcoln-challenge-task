@@ -1,7 +1,9 @@
 <div class="min-height" *ngIf="openAuctions$ | async as auctions; else loading">
   <ng-container *ngIf="auctions.length; else noItems">
     <ng-container *ngFor="let auction of auctions | paginate: { itemsPerPage: 5, currentPage: p }">
-      <app-item-displayer [auction]="auction"></app-item-displayer>
+<!--      <ng-container *ngIf="auction.endTimestamp != '-1' || (auction.endTimestamp == '-1' && (auction.iAmMaxBidder || auction.iAmSeller))">-->
+        <app-item-displayer [auction]="auction" ></app-item-displayer>
+<!--      </ng-container>-->
     </ng-container>
     <div class="pagination">
       <pagination-controls (pageChange)="p = $event" class="mx-auto"></pagination-controls>

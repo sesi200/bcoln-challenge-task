@@ -64,7 +64,7 @@ contract FirstPriceAuction is Auction {
        current_max_bid = msg.value;
        current_max_bidder = bidder;
    }
-   
+
    //the auction winner marks the item as received, thereby unlocking the funds for the seller
    function mark_as_item_received() override external auction_ended {
        require(tx.origin == current_max_bidder);
@@ -120,7 +120,7 @@ contract SecondPriceAuction is Auction {
        //note bidder
        all_bidders[bidder] = msg.value;
    }
-   
+
    //the auction winner marks the item as received, thereby unlocking the funds for the seller
    function mark_as_item_received() override external auction_ended {
        require(tx.origin == current_max_bidder);
@@ -164,6 +164,7 @@ contract AuctionHouse {
 
     event NewBid(uint auction_index, uint bid_amount);
     event AuctionClosed(uint auction_index, uint max_bid, address seller, address buyer);
+    event ObjectReceived(uint auction_index);
 
     function create_first_price_auction(string calldata description, string calldata img_url, uint auction_end_timestamp, uint minimum_bid_wei, uint minimum_bid_step_wei) external returns(uint256){
         Auction newAuction = new FirstPriceAuction(tx.origin, description, img_url, auction_end_timestamp, minimum_bid_wei, minimum_bid_step_wei);
@@ -185,9 +186,10 @@ contract AuctionHouse {
         auctions[auction_index].bid.value(msg.value)(msg.sender);
         emit NewBid(auction_index, msg.value);
     }
-    
+
     function mark_as_item_received(uint auction_index) external {
         auctions[auction_index].mark_as_item_received();
+        emit ObjectReceived(auction_index);
     }
 
     function close_auction(uint auction_index) external {

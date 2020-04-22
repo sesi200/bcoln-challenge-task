@@ -19,13 +19,16 @@ export class OpenAuctionsComponent implements OnInit {
   ngOnInit(): void {
     this.openAuctions$ = this.auctionService.getMethod(METHODS.OpenAuctions);
     this.metaMaskService.newEvent.subscribe(value => {
-      console.log(value);
+      // console.log(value);
       switch (value) {
         case 1:
           this.toastrService.success('There was a new bid');
           break;
         case 2:
           this.toastrService.success('Someone claimed an item');
+          break;
+        case 3:
+          this.toastrService.success('Someone received an item');
           break;
         case -1:
           this.toastrService.error('Something went wrong');

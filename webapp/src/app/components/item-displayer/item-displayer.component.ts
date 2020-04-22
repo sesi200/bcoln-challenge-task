@@ -61,4 +61,8 @@ export class ItemDisplayerComponent implements OnInit {
       this.valid = true;
     }
   }
+
+  confirmReception() {
+    this.auctionSerice.confirmReception(this.auction.auctionIndex);
+  }
 }

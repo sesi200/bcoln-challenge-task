@@ -306,32 +306,76 @@ export class MetaMaskService {
 
   AUCTION_ABI: any = [
     {
+      anonymous: false,
       inputs: [
         {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'max_bid',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
           internalType: 'address',
-          name: '',
+          name: 'seller',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'buyer',
           type: 'address'
         }
       ],
-      name: 'all_bidders',
-      outputs: [
+      name: 'AuctionClosed',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
         {
+          indexed: false,
           internalType: 'uint256',
-          name: '',
+          name: 'auction_index',
+          type: 'uint256'
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'bid_amount',
           type: 'uint256'
         }
       ],
-      stateMutability: 'view',
-      type: 'function'
+      name: 'NewBid',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'ObjectReceived',
+      type: 'event'
     },
     {
       inputs: [],
-      name: 'auction_closed',
+      name: 'all_auctions',
       outputs: [
         {
-          internalType: 'bool',
+          internalType: 'contract Auction[]',
           name: '',
-          type: 'bool'
+          type: 'address[]'
         }
       ],
       stateMutability: 'view',
@@ -345,91 +389,12 @@ export class MetaMaskService {
           type: 'address'
         }
       ],
-      name: 'bid',
-      outputs: [],
-      stateMutability: 'payable',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'close_auction',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'current_max_bid',
+      name: 'all_auctions_for_bidder',
       outputs: [
         {
-          internalType: 'uint256',
+          internalType: 'contract Auction[]',
           name: '',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'current_max_bidder',
-      outputs: [
-        {
-          internalType: 'address payable',
-          name: '',
-          type: 'address'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'current_sale_price',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'description',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'end_timestamp',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs: [],
-      name: 'img_url',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string'
+          type: 'address[]'
         }
       ],
       stateMutability: 'view',
@@ -439,16 +404,16 @@ export class MetaMaskService {
       inputs: [
         {
           internalType: 'address payable',
-          name: 'check',
+          name: 'seller',
           type: 'address'
         }
       ],
-      name: 'is_bidder',
+      name: 'all_auctions_for_seller',
       outputs: [
         {
-          internalType: 'bool',
+          internalType: 'contract Auction[]',
           name: '',
-          type: 'bool'
+          type: 'address[]'
         }
       ],
       stateMutability: 'view',
@@ -456,14 +421,91 @@ export class MetaMaskService {
     },
     {
       inputs: [],
-      name: 'mark_as_item_received',
+      name: 'all_open_auctions',
+      outputs: [
+        {
+          internalType: 'contract Auction[]',
+          name: '',
+          type: 'address[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'auctions',
+      outputs: [
+        {
+          internalType: 'contract Auction',
+          name: '',
+          type: 'address'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'bid',
+      outputs: [],
+      stateMutability: 'payable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'close_auction',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function'
     },
     {
-      inputs: [],
-      name: 'min_bid',
+      inputs: [
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string'
+        },
+        {
+          internalType: 'string',
+          name: 'img_url',
+          type: 'string'
+        },
+        {
+          internalType: 'uint256',
+          name: 'auction_end_timestamp',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_wei',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_step_wei',
+          type: 'uint256'
+        }
+      ],
+      name: 'create_first_price_auction',
       outputs: [
         {
           internalType: 'uint256',
@@ -471,12 +513,38 @@ export class MetaMaskService {
           type: 'uint256'
         }
       ],
-      stateMutability: 'view',
+      stateMutability: 'nonpayable',
       type: 'function'
     },
     {
-      inputs: [],
-      name: 'min_bid_step',
+      inputs: [
+        {
+          internalType: 'string',
+          name: 'description',
+          type: 'string'
+        },
+        {
+          internalType: 'string',
+          name: 'img_url',
+          type: 'string'
+        },
+        {
+          internalType: 'uint256',
+          name: 'auction_end_timestamp',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_wei',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minimum_bid_step_wei',
+          type: 'uint256'
+        }
+      ],
+      name: 'create_second_price_auction',
       outputs: [
         {
           internalType: 'uint256',
@@ -484,15 +552,21 @@ export class MetaMaskService {
           type: 'uint256'
         }
       ],
-      stateMutability: 'view',
+      stateMutability: 'nonpayable',
       type: 'function'
     },
     {
-      inputs: [],
-      name: 'seller',
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
+        }
+      ],
+      name: 'get_auction_address',
       outputs: [
         {
-          internalType: 'address payable',
+          internalType: 'address',
           name: '',
           type: 'address'
         }
@@ -501,16 +575,16 @@ export class MetaMaskService {
       type: 'function'
     },
     {
-      inputs: [],
-      name: 'winner_received_item',
-      outputs: [
+      inputs: [
         {
-          internalType: 'bool',
-          name: '',
-          type: 'bool'
+          internalType: 'uint256',
+          name: 'auction_index',
+          type: 'uint256'
         }
       ],
-      stateMutability: 'view',
+      name: 'mark_as_item_received',
+      outputs: [],
+      stateMutability: 'nonpayable',
       type: 'function'
     }
   ];

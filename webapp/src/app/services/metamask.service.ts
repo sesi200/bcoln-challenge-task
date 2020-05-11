@@ -531,6 +531,7 @@ export class MetaMaskService {
     }
     const privateAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.privateAuctionHouseAddress;
     const ropstenAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.ropstenAuctionHouseAddress;
+    const rinkebyAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.rinkebyAuctionHouseAddress;
     const mainNetAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.mainAuctionHouseAddress;
     return from(this.web3.eth.net.getNetworkType()).pipe(
       tap(currentNetwork => {
@@ -542,8 +543,14 @@ export class MetaMaskService {
             case 'ropsten':
               this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, ropstenAddress);
               break;
+            case 'rinkeby':
+              this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, rinkebyAddress);
+              break;
             case 'private':
               this.auctionHouseContract = new this.web3.eth.Contract(this.AUCTIONHOUSE_ABI, privateAddress);
+              break;
+            default:
+              throw 'Not supported network';
               break;
           }
         } catch (e) {

@@ -580,8 +580,10 @@ export class MetaMaskService {
 //     const tokenAmount = Web3.utils.toBN(10000000000);
     const BNminBid = new BigNumber(minBidWei);
     const BNminStep = new BigNumber(minStepWei);
-    const minBid = Web3.utils.toWei(Web3.utils.toBN(BNminBid.toFixed()), 'wei');
-    const minBidStep = Web3.utils.toWei(Web3.utils.toBN(BNminStep.toFixed()), 'wei');
+    // const minBid = Web3.utils.toWei(Web3.utils.toBN(BNminBid.toFixed()), 'ether');
+    // const minBidStep = Web3.utils.toWei(Web3.utils.toBN(BNminStep.toFixed()), 'ether');
+    const minBid = BNminBid.multipliedBy(1000000000000000000).toFixed();
+    const minBidStep = BNminStep.multipliedBy(1000000000000000000).toFixed();
 
 
     return this.getCurrentAccount().pipe(
@@ -676,8 +678,9 @@ export class MetaMaskService {
 
   public bidForAuctionByIndex(auctionIndex: number, value: number) {
     const BNvalue = new BigNumber(value);
+    console.log(BNvalue.multipliedBy(1000000000000000000).toFixed());
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
-      this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, BNvalue.toFixed()))));
+      this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, BNvalue.multipliedBy(1000000000000000000).toFixed()))));
   }
 
   public closeAuction(auctionIndex: number) {

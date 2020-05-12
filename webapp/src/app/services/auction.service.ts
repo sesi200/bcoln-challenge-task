@@ -239,7 +239,8 @@ export class AuctionService {
 
   placeBid(ether: number, auctionIndex: number): void {
     // console.log(ether);
-    this.metaMaskService.bidForAuctionByIndex(auctionIndex, this.convertEthToWei(ether)).pipe(first()).subscribe(value => {
+    this.metaMaskService.bidForAuctionByIndex(auctionIndex, ether).pipe(first()).subscribe(value => {
+    // this.metaMaskService.bidForAuctionByIndex(auctionIndex, this.convertEthToWei(ether)).pipe(first()).subscribe(value => {
       // window.location.reload();
     });
 
@@ -263,8 +264,8 @@ export class AuctionService {
       auction.description,
       auction.imgUrl,
       Number(auction.endTimestamp),
-      this.convertEthToWei(auction.minBid),
-      this.convertEthToWei(auction.minBidStep)
+      auction.minBid,
+      auction.minBidStep
     ).pipe(first()).subscribe(value => {
       window.location.reload();
     });
@@ -279,8 +280,10 @@ export class AuctionService {
   }
 
   convertEthToWei(eth: number) {
+    console.log(eth);
     const ethWeiFactor = 1000000000000000000;
     // const ethWeiFactor = 100000000;
+    console.log(Math.floor(eth * ethWeiFactor));
     return Math.floor(eth * ethWeiFactor);
     // return eth;
   }

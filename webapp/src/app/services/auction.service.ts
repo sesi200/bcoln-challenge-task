@@ -17,11 +17,12 @@ export enum METHODS {
 })
 export class AuctionService {
 
-  accountAddress = '';
+
+  usdExchangeRate = 0;
 
   constructor(private metaMaskService: MetaMaskService, private http: HttpClient) {
-    metaMaskService.getCurrentAccount().subscribe(value => {
-      this.accountAddress = this.accountAddress;
+    this.getUsdRate().subscribe(value => {
+      this.usdExchangeRate = value.USD;
     });
   }
 
@@ -114,6 +115,10 @@ export class AuctionService {
 
   getUsdRate(): Observable<any> {
     return this.http.get<any>('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD');
+  }
+
+  getUsdExchangeRate(): number{
+    return this.usdExchangeRate;
   }
 
 

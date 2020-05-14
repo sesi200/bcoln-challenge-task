@@ -8,12 +8,15 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./wrapper.component.scss']
 })
 export class WrapperComponent implements OnInit {
+  // component that wraps all the views and sets auction house address
 
   activeNav = 'auctions';
   auctionHouseAddress = environment.privateAuctionHouseAddress;
+
   constructor(private route: ActivatedRoute) {
   }
 
+  // read active menu item and auctionhouse address from local storage
   ngOnInit(): void {
     this.route.data.subscribe(v => {
       this.activeNav = v.menu;

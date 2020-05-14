@@ -7,12 +7,14 @@ import {DomSanitizer} from '@angular/platform-browser';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-item-displayer',
   templateUrl: './item-displayer.component.html',
   styleUrls: ['./item-displayer.component.scss']
 })
 export class ItemDisplayerComponent implements OnInit, OnDestroy {
+  // Component responsible for displaying items
 
   private componentDestroyed$ = new Subject<void>();
   @Input()
@@ -29,6 +31,7 @@ export class ItemDisplayerComponent implements OnInit, OnDestroy {
   constructor(private auctionSerice: AuctionService, private converter: EtherPipe, private sanitizer: DomSanitizer) {
   }
 
+  // convert initial bid and bid step values, get usd exchange rate, sanitize image, start time left timer
   ngOnInit(): void {
     this.minBidStep = this.converter.transform(this.auction.minBidStep, 'weiToEth');
     this.minBidValue = this.converter.transform(this.auction.currentMaxBid, 'weiToEth') + this.minBidStep;

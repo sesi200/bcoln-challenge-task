@@ -26,6 +26,7 @@ export class AuctionService {
     });
   }
 
+  // manages the execution of the methods which access the blockchain and makes sure the network and contracts are initialized
   getMethod(x: METHODS): Observable<Auction[]> {
     return this.metaMaskService.init().pipe(switchMap(() => {
       switch (x) {
@@ -41,6 +42,7 @@ export class AuctionService {
     }));
   }
 
+  // gets the open auctions from the metamask service and packs the information in an auction object
   getOpenAuctions(): Observable<Auction[]> {
     return this.metaMaskService.getAllOpenAuctions().pipe(
       map((addresses: string[]) => {
@@ -124,6 +126,7 @@ export class AuctionService {
   }
 
 
+  // gets auctions you are selling from the metamask service and packs the information in an auction object
   getMySelling(): Observable<Auction[]> {
     return this.metaMaskService.getSellerAuctions().pipe(
       map((addresses: string[]) => {
@@ -187,7 +190,8 @@ export class AuctionService {
     );
   }
 
-  getMyBidding(): Observable<Auction[]> {
+  // gets the auctions you are bidding from the metamask service and packs the information in an auction object
+    getMyBidding(): Observable<Auction[]> {
     return this.metaMaskService.getBidderAuctions().pipe(
       map((addresses: string[]) => {
         if (addresses) {
@@ -250,6 +254,7 @@ export class AuctionService {
     );
   }
 
+  // places a bid via the metamask service
   placeBid(ether: number, auctionIndex: number): void {
     // console.log(ether);
     this.metaMaskService.bidForAuctionByIndex(auctionIndex, ether).pipe(first()).subscribe(value => {
@@ -260,18 +265,21 @@ export class AuctionService {
     // TODO: Should return whether a bid was successful or not..
   }
 
+  // closes and auction via the metamask service
   closeAuction(auctionIndex: number): void {
     this.metaMaskService.closeAuction(auctionIndex).subscribe(value => {
       // window.location.reload();
     });
   }
 
+  // confirms the reception of an auction item via the metamask service
   confirmReception(auctionIndex: number): void {
     this.metaMaskService.confirmReception(auctionIndex).subscribe(value => {
       // window.location.reload();
     });
   }
 
+ // creates a new auction via the metamask service
   newAuction(auction: Auction): void {
     this.metaMaskService.createFirstPriceAuction(
       auction.description,
@@ -285,6 +293,7 @@ export class AuctionService {
     // TODO: Should return whether a bid was successful or not..
   }
 
+  // gets the index of an auction from the address via the metamask service
   getAuctionIndexOfAddress(address: string): Observable<number> {
     return this.metaMaskService.getAuctions().pipe(
       map((addresses: string[]) => {

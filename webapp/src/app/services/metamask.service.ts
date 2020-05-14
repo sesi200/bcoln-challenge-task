@@ -18,7 +18,7 @@ export class MetaMaskService {
   constructor(@Inject(WEB3) private web3: Web3, private toastr: ToastrService) {
   }
 
-
+  // ABI to interact with the auctionhouse contract
   AUCTIONHOUSE_ABI: any = [
     {
       anonymous: false,
@@ -304,6 +304,7 @@ export class MetaMaskService {
     }
   ];
 
+  // ABI to interact with the auction contract
   AUCTION_ABI: any = [
     {
       inputs: [
@@ -517,6 +518,7 @@ export class MetaMaskService {
 
   public auctionHouseContract: any;
 
+  // Format an object to pass on with a message to the contracts
   static getTransactionObject(FROM: string, GAS: number, VALUE: number | string) {
     return {
       from: FROM,
@@ -526,9 +528,12 @@ export class MetaMaskService {
   }
 
   init() {
+    // only init once
     if (this.auctionHouseContract !== undefined) {
       return of(undefined);
     }
+
+    // init the contracts/network with the corresponding contract addresses
     const privateAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.privateAuctionHouseAddress;
     const ropstenAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.ropstenAuctionHouseAddress;
     const rinkebyAddress = localStorage.getItem('auctionHouseContractAddress') ? localStorage.getItem('auctionHouseContractAddress') : environment.rinkebyAuctionHouseAddress;
@@ -571,17 +576,10 @@ export class MetaMaskService {
     );
   }
 
+  // create an auction with the type first price auction by calling the contract
   public createFirstPriceAuction(description: string, imgUrl: string, endTimestamp: number, minBidWei: number, minStepWei: number) {
-//     // Decimal
-//     const decimals = Web3.utils.toBN(18);
-//
-// // Amount of token
-//     const tokenAmountHex = '0x' + minBidWei.mul(Web3.utils.toBN(10).pow(decimals)).toString('hex');
-//     const tokenAmount = Web3.utils.toBN(10000000000);
     const BNminBid = new BigNumber(minBidWei);
     const BNminStep = new BigNumber(minStepWei);
-    // const minBid = Web3.utils.toWei(Web3.utils.toBN(BNminBid.toFixed()), 'ether');
-    // const minBidStep = Web3.utils.toWei(Web3.utils.toBN(BNminStep.toFixed()), 'ether');
     const minBid = BNminBid.multipliedBy(1000000000000000000).toFixed();
     const minBidStep = BNminStep.multipliedBy(1000000000000000000).toFixed();
 
@@ -592,30 +590,36 @@ export class MetaMaskService {
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 
+  // gets all auctions
   public getAuctions() {
     return from(this.auctionHouseContract.methods.all_auctions().call());
   }
 
+  // gets the auction address from an index
   public getAuctionAddress(auctionIndex: number) {
     return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call());
   }
 
+  // gets all open auctions
   public getAllOpenAuctions() {
     return from(this.auctionHouseContract.methods.all_open_auctions().call());
   }
 
+  // gets the auctions you are bidding
   public getBidderAuctions() {
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount => from(this.auctionHouseContract.methods.all_auctions_for_bidder(currentAccount).call()))
     );
   }
 
+  // gets the auctions where you sell
   public getSellerAuctions() {
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount => from(this.auctionHouseContract.methods.all_auctions_for_seller(currentAccount).call()))
     );
   }
 
+  // gets the auction description by the index of the auction
   public getAuctionDescriptionFromIndex(auctionIndex: number) {
     return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call()).pipe(
       map((auctionAddress: string) => new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress)),
@@ -623,18 +627,22 @@ export class MetaMaskService {
       ));
   }
 
+  // gets the auction description by the address of the auction
   public getAuctionDescriptionFromAddress(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.description().call());
   }
 
+  // gets the auction max bid by the address of the auction
   public getAuctionCurrentMaxBidFromAddress(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_max_bid().call());
   }
 
+  // gets the auction current sale price by the address of the auction
   public getAuctionCurrentSalePrice(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_sale_price().call());
   }
 
+  // gets the timestamp when the auction ends by the index of the auction
   public getAuctionEndTimestampFromIndex(auctionIndex: number) {
     return from(this.auctionHouseContract.methods.get_auction_address(auctionIndex).call()).pipe(
       map((auctionAddress: string) => new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress)),
@@ -642,40 +650,49 @@ export class MetaMaskService {
       ));
   }
 
+  // gets the timestamp when the auction ends by the address of the auction
   public getAuctionTimestampFromAddress(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.end_timestamp().call());
   }
 
+  // gets the min bid step by the address of the auction
   public getAuctionMinBidStepFromAddress(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.min_bid_step().call());
   }
 
+  // gets the address of the max bidder by the address of the auction
   public getCurrentMaxBidder(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.current_max_bidder().call());
   }
 
+  // gets the address of the seller by the address of the auction
   public getAuctionSeller(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.seller().call());
   }
 
+  // gets the url of the image for an auction by the address of the auction
   public getImageUrl(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.img_url().call());
   }
 
+  // checks if the winner received the item by the address of the auction
   public getWinnerReceivedItem(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.winner_received_item().call());
   }
 
+  // checks if the auction is closed by the address of the auction
   public getAuctionClosed(auctionAddress: string) {
     return from(new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.auction_closed().call());
   }
 
+  // bids for an auction by the address of the auction
   public bidForAuction(auctionAddress: string, value: number) {
     const BNvalue = new BigNumber(value);
     return this.getCurrentAccount().pipe(switchMap(currentAccount =>
       new this.web3.eth.Contract(this.AUCTION_ABI, auctionAddress).methods.bid(currentAccount).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, BNvalue.toFixed()))));
   }
 
+  // bids for an auction by the index of the auction which is preferred because this sends events
   public bidForAuctionByIndex(auctionIndex: number, value: number) {
     const BNvalue = new BigNumber(value);
     console.log(BNvalue.multipliedBy(1000000000000000000).toFixed());
@@ -683,6 +700,7 @@ export class MetaMaskService {
       this.auctionHouseContract.methods.bid(auctionIndex).send(MetaMaskService.getTransactionObject(currentAccount, 3000000, BNvalue.multipliedBy(1000000000000000000).toFixed()))));
   }
 
+  // closes an auction by the index of the auction
   public closeAuction(auctionIndex: number) {
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount =>
@@ -690,6 +708,7 @@ export class MetaMaskService {
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 
+  // confirms the reception of an item by the index of the auction
   public confirmReception(auctionIndex: number) {
     return this.getCurrentAccount().pipe(
       switchMap(currentAccount =>
@@ -697,6 +716,7 @@ export class MetaMaskService {
           .send(MetaMaskService.getTransactionObject(currentAccount, 5000000, 0))));
   }
 
+  // manage the new bid event
   public newBidEvent() {
     this.auctionHouseContract.events.NewBid().on('data', (event) => {
       // console.log(event.returnValues);
@@ -709,6 +729,7 @@ export class MetaMaskService {
     });
   }
 
+  // manage the auction closed event
   public auctionClosedEvent() {
     this.auctionHouseContract.events.AuctionClosed().on('data', (event) => {
       // console.log(event.returnValues);
@@ -720,6 +741,8 @@ export class MetaMaskService {
       this.newEventSubject.next(0);
     });
   }
+
+  // manage the object received event
   public objectReceivedEvent() {
     this.auctionHouseContract.events.ObjectReceived().on('data', (event) => {
       // console.log(event.returnValues);

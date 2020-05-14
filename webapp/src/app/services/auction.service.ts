@@ -313,33 +313,5 @@ export class AuctionService {
       return '-1';
     }
     return endTimestamp;
-
-    // let diff = (Number(endTimestamp) - currentTimestamp);
-    //
-    // const days = Math.floor(diff / 86400);
-    // diff -= days * 86400;
-    //
-    // const hours = Math.floor(diff / 3600) % 24;
-    // diff -= hours * 3600;
-    //
-    // const minutes = Math.floor(diff / 60) % 60;
-    // diff -= minutes * 60;
-    //
-    // const seconds = diff % 60;
-    //
-    // if (days > 0) {
-    //   return `${days}d, ${hours}h`;
-    // }
-    // if (hours > 0) {
-    //   return `${hours}h, ${minutes}m`;
-    // }
-    // if (minutes > 0) {
-    //   return `${minutes}m, ${seconds}s`;
-    // }
-    // if (seconds > 0) {
-    //   return `${seconds}s`;
-    // } else {
-    //   return 'Auction ended';
-    // }
   }
 }

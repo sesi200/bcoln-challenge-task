@@ -29,9 +29,7 @@ export class ItemDisplayerComponent implements OnInit, OnDestroy {
   constructor(private auctionSerice: AuctionService, private converter: EtherPipe, private sanitizer: DomSanitizer) {
   }
 
-
   ngOnInit(): void {
-    // TODO: based on step
     this.minBidStep = this.converter.transform(this.auction.minBidStep, 'weiToEth');
     this.minBidValue = this.converter.transform(this.auction.currentMaxBid, 'weiToEth') + this.minBidStep;
     this.bid = Number(parseFloat(this.minBidValue.toString()).toPrecision(12));

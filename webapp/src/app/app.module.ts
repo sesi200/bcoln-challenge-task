@@ -28,6 +28,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {TimeleftPipe} from './pipes/timeleft.pipe';
 import {ToastrModule, ToastrService} from 'ngx-toastr';
+import {HttpClientModule} from '@angular/common/http';
+import {NgxMaskModule} from 'ngx-mask';
 
 @NgModule({
   declarations: [
@@ -60,6 +62,8 @@ import {ToastrModule, ToastrService} from 'ngx-toastr';
     MatDatetimepickerModule,
     MatProgressSpinnerModule,
     NgxPaginationModule,
+    HttpClientModule,
+    NgxMaskModule.forRoot(),
     ToastrModule.forRoot({preventDuplicates: true})
     // NgxPageScrollModule
   ],

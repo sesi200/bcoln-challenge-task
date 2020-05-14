@@ -10,7 +10,7 @@
         <div class="col-4 text-right"><span class="item-time"><fa-icon icon="clock" class="pointer" ngbTooltip="Time left"></fa-icon> {{timeLeft | timeleft}}</span></div>
       </div>
       <div class="row">
-        <div class="col-6"><span class="item-price"><fa-icon  [icon]="['fab','ethereum']" class="pointer" ngbTooltip="Current highest bid"></fa-icon> {{auction.currentMaxBid | etherConverter | number: '1.2-5'}}</span></div>
+        <div class="col-6"><span class="item-price"><fa-icon  [icon]="['fab','ethereum']" class="pointer" ngbTooltip="Current highest bid"></fa-icon> {{auction.currentMaxBid | etherConverter | number: '1.2-5'}}</span> <span class="ml-2" *ngIf="usdEquivalent">({{usdEquivalent | mask: 'separator.2':'\''}} USD)</span></div>
         <div class="col-6" *ngIf="timeLeft !== -1 && !auction.iAmSeller">
           <span *ngIf="auction.iAmMaxBidder" class="float-right winning">You have the highest bid</span>
           <div class="input-group">

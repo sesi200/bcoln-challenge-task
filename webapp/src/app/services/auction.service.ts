@@ -3,6 +3,7 @@ import {Auction} from '../model/model';
 import {empty, forkJoin, Observable, of} from 'rxjs';
 import {first, map, switchMap, tap} from 'rxjs/operators';
 import {MetaMaskService} from './metamask.service';
+import {HttpClient} from '@angular/common/http';
 
 
 export enum METHODS {
@@ -18,7 +19,7 @@ export class AuctionService {
 
   accountAddress = '';
 
-  constructor(private metaMaskService: MetaMaskService) {
+  constructor(private metaMaskService: MetaMaskService, private http: HttpClient) {
     metaMaskService.getCurrentAccount().subscribe(value => {
       this.accountAddress = this.accountAddress;
     });
@@ -110,6 +111,11 @@ export class AuctionService {
       // })
     );
   }
+
+  getUsdRate(): Observable<any> {
+    return this.http.get<any>('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD');
+  }
+
 
   getMySelling(): Observable<Auction[]> {
     return this.metaMaskService.getSellerAuctions().pipe(

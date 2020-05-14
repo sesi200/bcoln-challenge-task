@@ -21,6 +21,7 @@ export class ItemDisplayerComponent implements OnInit {
   valid = true;
   image;
   emptyBidder = '0x0000000000000000000000000000000000000000';
+  usdEquivalent = 0;
 
   constructor(private auctionSerice: AuctionService, private converter: EtherPipe, private sanitizer: DomSanitizer) {
   }
@@ -31,6 +32,11 @@ export class ItemDisplayerComponent implements OnInit {
     this.minBidValue = this.converter.transform(this.auction.currentMaxBid, 'weiToEth') + this.minBidStep;
     this.bid = Number(parseFloat(this.minBidValue.toString()).toPrecision(12));
     this.image = this.sanitizer.bypassSecurityTrustStyle(`url(${this.auction.imgUrl})`);
+    this.auctionSerice.getUsdRate().subscribe(value => {
+      console.log(value.USD);
+      this.usdEquivalent = value.USD * (this.auction.currentMaxBid / 1000000000000000000);
+    });
+
     this.recalcTime();
     const int = setInterval(() => {
       this.recalcTime();
